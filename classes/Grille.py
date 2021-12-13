@@ -19,3 +19,9 @@ class Grille:
     for comb in combinaisons:
       if this.tableau[comb[2]].value == this.tableau[comb[1]].value and this.tableau[comb[1]].value == this.tableau[comb[0]].value:
         return True
+
+  def __str__(this):
+    # brute force mdrr
+    print(f"|{this.tableau[0].value}|{this.tableau[1].value}|{this.tableau[2].value}|")
+    print(f"|{this.tableau[3].value}|{this.tableau[4].value}|{this.tableau[5].value}|")
+    print(f"|{this.tableau[6].value}|{this.tableau[7].value}|{this.tableau[8].value}|")
