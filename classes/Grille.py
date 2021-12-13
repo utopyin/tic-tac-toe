@@ -3,7 +3,7 @@ from .Case import Case
 genius = [8, 1, 6, 3, 5, 7, 4, 9, 2]
 class Grille:
   def __init__(this):
-    this.tableau = [Case() for k in range(9)]
+    this.tableau = [Case(k,None) for k in range(9)]
 
   def isCaseEmpty(this, pos):
     return this.tableau[pos].value == None

@@ -4,4 +4,6 @@ class Case :
         this.value = value
 
     def __str__(this) -> str:
-        return this.value
+        if this.value :
+            return this.value
+        return " "
