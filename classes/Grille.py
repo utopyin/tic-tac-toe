@@ -22,6 +22,4 @@ class Grille:
 
   def __str__(this):
     # brute force mdrr
-    print(f"|{this.tableau[0]}|{this.tableau[1]}|{this.tableau[2]}|")
-    print(f"|{this.tableau[3]}|{this.tableau[4]}|{this.tableau[5]}|")
-    print(f"|{this.tableau[6]}|{this.tableau[7]}|{this.tableau[8]}|")
+    return f"|{this.tableau[0]}|{this.tableau[1]}|{this.tableau[2]}|" + "\n" + f"|{this.tableau[3]}|{this.tableau[4]}|{this.tableau[5]}|" + "\n" + f"|{this.tableau[6]}|{this.tableau[7]}|{this.tableau[8]}|"
