@@ -1,7 +1,6 @@
-import sys
-sys.path.append(".")
-from Grille import Grille
-from Joueur import Joueur
+
+from .Grille import Grille
+from .Joueur import Joueur
 
 class Jeu:
     def __init__(this) -> None:
