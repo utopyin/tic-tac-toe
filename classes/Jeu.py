@@ -1,13 +1,12 @@
-import sys
-sys.path.append(".")
-from Grille import Grille
-from Joueur import Joueur
+
+from .Grille import Grille
+from .Joueur import Joueur
 
 class Jeu:
     def __init__(this) -> None:
         this.Joueurs = []
         for k in range(2) :
-            this.Joueurs.append(Joueur(input("Pseudo Joueur "+k)),k)
+            this.Joueurs.append(Joueur(input("Pseudo Joueur  " + str(k) + ": "),k))
         this.count= 0
         this.index = 0
         this.grid = Grille()
