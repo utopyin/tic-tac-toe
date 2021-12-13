@@ -19,7 +19,7 @@ class Jeu:
 
     def round(this):
         print(this.grid)
-        activePlayer = this.whoplays()
+        activePlayer = this.whoPlays()
         caseCosen= int(input("Veuillez choisir la case où jouer"))
         while caseCosen<0 or caseCosen>8 or not(this.grid.isCaseEmpty(caseCosen)):
             caseCosen= int(input("Veuillez choisir la case où jouer"))
