@@ -1,4 +1,5 @@
 class Joueur:
-  def __init__(this, nom, symbole):
+  def __init__(this, nom, num):
     this.nom = nom
-    this.symbole = symbole
+    lstSymbols = ["O","\u262b"]
+    this.symbole = lstSymbols[num]
