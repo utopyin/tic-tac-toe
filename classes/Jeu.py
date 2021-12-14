@@ -12,9 +12,9 @@ class Jeu:
         this.grid = Grille()
 
     def whoPlays(this):
-        return this.players[this.index]
+        return this.Joueurs[this.index]
 
-    def nexPlayer(this):
+    def nextPlayer(this):
         this.index = (this.index+1)%2
 
     def round(this):
@@ -32,10 +32,10 @@ class Jeu:
             if this.count>=5:
                 over = this.grid.isGameOver()
                 if over:
-                    print
-                    return 
+                    print("Le joueur " + this.index + " a gagné !")
+                    return 1
             if this.count>=9:
                 print("Egalité")
                 return 0
-            this.nextplayer()
+            this.nextPlayer()
 
