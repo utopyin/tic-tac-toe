@@ -5,9 +5,9 @@ from .Joueur import Joueur
 class Jeu:
     def __init__(this) -> None:
         this.Joueurs = []
-        for k in range(2) :
-            this.Joueurs.append(Joueur(input("Pseudo Joueur  " + str(k) + ": "),k))
-        this.count= 0
+        this.Joueurs.append(Joueur(input("Pseudo Joueur n°1 : "), 0))
+        this.Joueurs.append(Joueur(input("Pseudo Joueur n°2 : "), 1))
+        this.count = 0
         this.index = 0
         this.grid = Grille()
 
@@ -15,15 +15,15 @@ class Jeu:
         return this.Joueurs[this.index]
 
     def nextPlayer(this):
-        this.index = (this.index+1)%2
+        this.index = (this.index + 1) % 2
 
     def round(this):
         print(this.grid)
         activePlayer = this.whoPlays()
-        caseCosen= int(input("Veuillez choisir la case où jouer"))
-        while caseCosen<0 or caseCosen>8 or not(this.grid.isCaseEmpty(caseCosen)):
-            caseCosen= int(input("Veuillez choisir la case où jouer"))
-        this.grid.updateCase(caseCosen,activePlayer.symbole)
+        caseChosen= int(input("Veuillez choisir la case où jouer : "))
+        while caseChosen<0 or caseChosen>8 or not(this.grid.isCaseEmpty(caseChosen)):
+            caseChosen = int(input("Veuillez choisir la case où jouer : "))
+        this.grid.updateCase(caseChosen, activePlayer.symbole)
         this.count += 1
 
     def game(this):
@@ -32,7 +32,7 @@ class Jeu:
             if this.count>=5:
                 over = this.grid.isGameOver()
                 if over:
-                    print("Le joueur " + this.index + " a gagné !")
+                    print("Le joueur " + str(this.Joueurs[this.index].nom) + " a gagné !")
                     return 1
             if this.count>=9:
                 print("Egalité")
