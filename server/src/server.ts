@@ -1,11 +1,12 @@
 import { WebSocketServer } from 'ws';
+import GameHandler from './classes/GameHandler';
+import { onMessage, onClose } from './handlers'
 
-const wss = new WebSocketServer({ port: 8080 });
+export const gameHandler = new GameHandler();
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function message(data) {
-    console.log(`received: ${data}`);
-  });
-
-  ws.send('something');
-});
+new WebSocketServer({ port: 8080 })
+  .on('connection', (ws) => {
+    ws.on('message', onMessage);
+    ws.onclose = onClose
+  })
+  .on('close', () => console.log('Connection closing...'));

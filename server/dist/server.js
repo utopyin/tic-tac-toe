@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.gameHandler = void 0;
 var ws_1 = require("ws");
-var wss = new ws_1.WebSocketServer({ port: 8080 });
-wss.on('connection', function connection(ws) {
-    ws.on('message', function message(data) {
-        console.log("received: ".concat(data));
-    });
-    ws.send('something');
-});
+var GameHandler_1 = require("./classes/GameHandler");
+var handlers_1 = require("./handlers");
+exports.gameHandler = new GameHandler_1.default();
+new ws_1.WebSocketServer({ port: 8080 })
+    .on('connection', function (ws) {
+    ws.on('message', handlers_1.onMessage);
+    ws.onclose = handlers_1.onClose;
+})
+    .on('close', function () { return console.log('Connection closing...'); });
 //# sourceMappingURL=server.js.map

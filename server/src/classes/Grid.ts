@@ -1,12 +1,10 @@
-import Case, { Position, Symbole } from './Case';
+import Case, { Position, Symbol } from './Case';
 
-const genius = [8, 1, 6, 3, 5, 7, 4, 9, 2]
-
-export default class Grille {
+export default class Grid {
   tableau;
   constructor() {
     this.tableau = []
-    for (let k=0;k++;k<9){
+    for (let k = 0; k < 9; k++) {
       this.tableau.push(new Case(k))
     }
   }
@@ -15,22 +13,29 @@ export default class Grille {
     return this.tableau[pos].value == null
   }
 
-  updateCase(pos: Position, val: Symbole) {
-    if (this.isCaseEmpty(pos)){
-      this.tableau[pos].value = val
-    }
+  updateCase(pos: Position, uuid: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.isCaseEmpty(pos)) {
+        this.tableau[pos].value = uuid
+        resolve()
+      }
+      reject()
+    })
   }
 
   isGameOver() {
    //brute force à améliorer si possible pour le rendre plus sexy
     const combinaisons: Position[][] = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
   
-    combinaisons.forEach(comb => {
-      if (this.tableau[comb[2]].value && this.tableau[comb[2]].value == this.tableau[comb[1]].value && this.tableau[comb[1]].value == this.tableau[comb[0]].value){
+    for (let k = 0; k < combinaisons.length; k++) {
+      if (
+        this.tableau[combinaisons[k][2]].value &&
+        this.tableau[combinaisons[k][2]].value == this.tableau[combinaisons[k][1]].value &&
+        this.tableau[combinaisons[k][1]].value == this.tableau[combinaisons[k][0]].value
+      ) {
         return true
       }
-    });
-
+    }
     return false
   }
   
