@@ -48,4 +48,15 @@ export default class GameHandler {
       }))
     });
   }
+
+  playerLeft(uuid:string) {
+    const game =this.get(uuid)
+    if (game){
+      let needDestroy = game.playerLeft(uuid)
+      if (needDestroy) {
+        delete this.games[this.players[uuid]]
+      }
+      delete this.players[uuid]
+    }
+  }
 }

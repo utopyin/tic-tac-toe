@@ -24,6 +24,9 @@ export function onMessage(this: WebSocket, payload: RawData) {
           data: uuidV4()
         }))
         break;
+      case 'leave':
+        gameHandler.playerLeft(data.uuid)
+        break;
     }
   } catch(e) {
     console.log(e)
