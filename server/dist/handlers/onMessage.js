@@ -10,21 +10,25 @@ function onMessage(payload) {
         switch (op) {
             case 'host':
                 server_1.gameHandler.create({
-                    uuid: data,
-                    ws: this
+                    uuid: data.uuid,
+                    name: data.name,
+                    ws: this,
                 });
                 break;
             case 'play':
-                (_a = server_1.gameHandler.get(data.uuid)) === null || _a === void 0 ? void 0 : _a.play(data);
+                (_a = server_1.gameHandler.getGameByPlayer(data.uuid)) === null || _a === void 0 ? void 0 : _a.play(data);
                 break;
             case 'join':
-                server_1.gameHandler.join(data.host, { uuid: data.uuid, ws: this });
+                server_1.gameHandler.join(data.room, { uuid: data.uuid, ws: this, name: data.name });
                 break;
             case 'hello':
                 this.send(JSON.stringify({
                     op: 'hello',
                     data: (0, uuid_1.v4)()
                 }));
+                break;
+            case 'leave':
+                server_1.gameHandler.leave(data.uuid);
                 break;
         }
     }

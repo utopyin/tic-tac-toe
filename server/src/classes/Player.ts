@@ -3,14 +3,16 @@ import { Position } from './case';
 
 export interface PlayerProps {
   uuid: string;
+  name: string;
   ws: WebSocket;
 }
 
 export default class Player {
-  uuid; ws;
-  constructor({uuid, ws}: PlayerProps) {
+  uuid; ws; name;
+  constructor({uuid, ws, name}: PlayerProps) {
     this.uuid = uuid;
     this.ws = ws;
+    this.name = name;
     // const symbols: Symbol[] = ["O", "\u262b"];
   }
 
@@ -28,10 +30,13 @@ export default class Player {
     }))
   }
 
-  win(turn: number) {
+  win(turn: number, forfeit: boolean = false) {
     this.ws.send(JSON.stringify({
       op: 'win',
-      data: turn
+      data: {
+        turn,
+        forfeit
+      }
     }))
   }
 

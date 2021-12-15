@@ -10,17 +10,26 @@ var Game = /** @class */ (function () {
         this.index = 0;
         this.turn = 0;
         this.grid = new Grid_1.default();
+        this.isOver = false;
     }
-    Game.prototype.join = function (challenger, error) {
-        if (this.challenger)
-            return error('The game is full.');
-        if (challenger.uuid == this.host.uuid)
-            return error('You can not join a game you host.');
-        this.challenger = new Player_1.default(challenger);
-        challenger.ws.send(JSON.stringify({
-            op: 'join',
-            data: 'You just joined a game.'
-        }));
+    Game.prototype.join = function (challenger) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            if (_this.challenger)
+                return reject('The game is full.');
+            if (challenger.uuid == _this.host.uuid)
+                return reject('You can not join a game you host.');
+            _this.challenger = new Player_1.default(challenger);
+            _this.host.ws.send(JSON.stringify({
+                op: 'join',
+                data: challenger.name
+            }));
+            challenger.ws.send(JSON.stringify({
+                op: 'join',
+                data: _this.host.name
+            }));
+            resolve();
+        });
     };
     Game.prototype.whoPlays = function () {
         return this.index == 0 ? this.host : this.challenger;
@@ -37,6 +46,8 @@ var Game = /** @class */ (function () {
         var uuid = data.uuid, position = data.position;
         var player = this.getPlayer(uuid);
         if (player) {
+            if (this.isOver)
+                return player.error("You can't play, the game is over !");
             if (!this.challenger)
                 return player.error('The game has not started yet!');
             var activePlayer = this.whoPlays();
@@ -58,6 +69,7 @@ var Game = /** @class */ (function () {
         var _a, _b;
         if (this.turn < 4 || !this.grid.isGameOver())
             return false;
+        this.isOver = true;
         (_a = this.whoPlays()) === null || _a === void 0 ? void 0 : _a.win(this.turn);
         (_b = this.whoWaits()) === null || _b === void 0 ? void 0 : _b.lose(this.turn);
         return true;
@@ -65,6 +77,21 @@ var Game = /** @class */ (function () {
     Game.prototype.getPlayer = function (uuid) {
         var _a;
         return uuid == this.host.uuid ? this.host : uuid == ((_a = this.challenger) === null || _a === void 0 ? void 0 : _a.uuid) ? this.challenger : null;
+    };
+    Game.prototype.leave = function (uuid) {
+        if (!this.challenger)
+            return true; // if the game isn't full yet, return true => destroy the game and the player index in handler
+        if (uuid == this.host.uuid) { // if player == host
+            this.challenger.win(this.turn, true); // challenger wins by forfeit
+            this.isOver = true; // game's over
+            this.host = this.challenger; // host becomes challenger
+        }
+        else if (uuid == this.challenger.uuid) {
+            this.host.win(this.turn, true); // host wins by forfeit
+            this.isOver = true; // game's over
+            this.challenger = null; // challenger left
+        }
+        return false; // the game isn't destroyed
     };
     return Game;
 }());

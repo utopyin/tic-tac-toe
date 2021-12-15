@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Player = /** @class */ (function () {
     function Player(_a) {
-        var uuid = _a.uuid, ws = _a.ws;
+        var uuid = _a.uuid, ws = _a.ws, name = _a.name;
         this.uuid = uuid;
         this.ws = ws;
+        this.name = name;
         // const symbols: Symbol[] = ["O", "\u262b"];
     }
     Player.prototype.update = function (position) {
@@ -19,10 +20,14 @@ var Player = /** @class */ (function () {
             data: errorMessage
         }));
     };
-    Player.prototype.win = function (turn) {
+    Player.prototype.win = function (turn, forfeit) {
+        if (forfeit === void 0) { forfeit = false; }
         this.ws.send(JSON.stringify({
             op: 'win',
-            data: turn
+            data: {
+                turn: turn,
+                forfeit: forfeit
+            }
         }));
     };
     Player.prototype.lose = function (turn) {

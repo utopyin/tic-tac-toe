@@ -13,14 +13,24 @@ export default class Game {
     this.isOver = false
   }
 
-  join(challenger: PlayerProps, error: (message: string) => void) {
-    if (this.challenger) return error('The game is full.');
-    if (challenger.uuid == this.host.uuid) return error('You can not join a game you host.');
-    this.challenger = new Player(challenger);
-    challenger.ws.send(JSON.stringify({
-      op: 'join',
-      data: 'You just joined a game.'
-    }))
+  join(challenger: PlayerProps) {
+    return new Promise<void>((resolve, reject) => {
+      if (this.challenger) return reject('The game is full.');
+      if (challenger.uuid == this.host.uuid) return reject('You can not join a game you host.');
+      this.challenger = new Player(challenger);
+
+      this.host.ws.send(JSON.stringify({
+        op: 'join',
+        data: challenger.name
+      }))
+      challenger.ws.send(JSON.stringify({
+        op: 'join',
+        data: this.host.name
+      }))
+
+      resolve()
+    })
+    
   }
 
   whoPlays() {
@@ -71,20 +81,18 @@ export default class Game {
     return uuid == this.host.uuid ? this.host : uuid == this.challenger?.uuid ? this.challenger : null
   }
 
-  playerLeft(uuid :string) {
-    if (this.challenger) {
-      if (this.host.uuid == uuid) { //check if player is host
-        this.challenger.win(this.turn)
-        this.isOver = true
-        this.host = this.challenger
-      } else {
-        this.host.win(this.turn)
-        this.isOver = true
-      }
-      this.challenger = null
-      return false
+  leave(uuid: string) {
+    if (!this.challenger) return true; // if the game isn't full yet, return true => destroy the game and the player index in handler
+    if (uuid == this.host.uuid) { // if player == host
+      this.challenger.win(this.turn, true) // challenger wins by forfeit
+      this.isOver = true // game's over
+      this.host = this.challenger // host becomes challenger
+    } else if (uuid == this.challenger.uuid) {
+      this.host.win(this.turn, true)  // host wins by forfeit
+      this.isOver = true // game's over
+      this.challenger = null // challenger left
     }
-    return true
+    return false // the game isn't destroyed
   }
   
 }

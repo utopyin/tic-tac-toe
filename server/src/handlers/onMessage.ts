@@ -8,15 +8,16 @@ export function onMessage(this: WebSocket, payload: RawData) {
     switch(op) {
       case 'host':
         gameHandler.create({
-          uuid: data,
-          ws: this
+          uuid: data.uuid,
+          name: data.name,
+          ws: this,
         })
         break;
       case 'play':
-        gameHandler.get(data.uuid)?.play(data);
+        gameHandler.getGameByPlayer(data.uuid)?.play(data);
         break;
       case 'join':
-        gameHandler.join(data.host, { uuid: data.uuid, ws: this })
+        gameHandler.join(data.room, { uuid: data.uuid, ws: this, name: data.name })
         break;
       case 'hello':
         this.send(JSON.stringify({
@@ -25,7 +26,7 @@ export function onMessage(this: WebSocket, payload: RawData) {
         }))
         break;
       case 'leave':
-        gameHandler.playerLeft(data.uuid)
+        gameHandler.leave(data.uuid)
         break;
     }
   } catch(e) {

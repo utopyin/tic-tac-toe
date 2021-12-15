@@ -1,43 +1,63 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Game_1 = require("./Game");
+var uuid_1 = require("uuid");
 var GameHandler = /** @class */ (function () {
     function GameHandler() {
-        this.games = [];
         this.players = {};
+        this.rooms = {};
     }
-    GameHandler.prototype.get = function (uuid) {
-        return this.players[uuid] != undefined ? this.games[this.players[uuid]] : null;
-    };
-    GameHandler.prototype.create = function (host, challenger) {
-        if (challenger === void 0) { challenger = null; }
+    GameHandler.prototype.create = function (host) {
         if (this.players[host.uuid] != undefined) {
             host.ws.send(JSON.stringify({
                 op: 'error',
                 data: 'You can not join a game as you are already playing or hosting one.'
             }));
         }
-        var newGame = new Game_1.default(host, challenger);
-        var length = this.games.push(newGame);
-        this.players[host.uuid] = length - 1;
-        if (challenger)
-            this.players[challenger.uuid] = length - 1;
+        var roomUuid = (0, uuid_1.v4)();
+        this.rooms[roomUuid] = new Game_1.default(host);
+        this.players[host.uuid] = roomUuid;
     };
-    GameHandler.prototype.join = function (hostUUID, challenger) {
-        var game = this.get(hostUUID);
+    GameHandler.prototype.join = function (roomUUID, challenger) {
+        var _this = this;
+        var game = this.getGame(roomUUID);
         if (!game) {
             return challenger.ws.send(JSON.stringify({
                 op: 'error',
                 data: 'The game was not found.'
             }));
         }
-        this.players[challenger.uuid] = this.players[hostUUID];
-        game.join(challenger, function (errorMessage) {
+        game.join(challenger).then(function () {
+            _this.players[challenger.uuid] = roomUUID;
+        }).catch(function (message) {
             challenger.ws.send(JSON.stringify({
                 op: 'error',
-                data: errorMessage
+                data: message
             }));
         });
+    };
+    GameHandler.prototype.getRoom = function (uuid) {
+        return this.players[uuid] != undefined ? this.players[uuid] : null;
+    };
+    GameHandler.prototype.getGame = function (roomUUID) {
+        return this.rooms[roomUUID] != undefined ? this.rooms[roomUUID] : null;
+    };
+    GameHandler.prototype.getGameByPlayer = function (uuid) {
+        var roomUUID = this.getRoom(uuid);
+        return roomUUID ? this.getGame(roomUUID) : null;
+    };
+    GameHandler.prototype.leave = function (uuid) {
+        var roomUUID = this.getRoom(uuid);
+        if (roomUUID) {
+            var game = this.getGame(roomUUID);
+            if (game) {
+                var needDestroy = game.leave(uuid);
+                if (needDestroy) {
+                    delete this.rooms[roomUUID];
+                }
+                delete this.players[uuid];
+            }
+        }
     };
     return GameHandler;
 }());
