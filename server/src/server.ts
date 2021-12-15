@@ -6,6 +6,7 @@ export const gameHandler = new GameHandler();
 
 new WebSocketServer({ port: 8080 })
   .on('connection', (ws) => {
+    console.log('connected!')
     ws.on('message', onMessage);
     ws.onclose = onClose
   })

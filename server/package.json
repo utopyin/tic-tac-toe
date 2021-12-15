@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "start:dev": "concurrently \"tsc -W\" \"nodemon dist/server.js\""
+    "dev": "concurrently \"tsc -W\" \"nodemon dist/server.js\""
   },
   "author": "utopy, raphoo",
   "license": "ISC",
