@@ -12,7 +12,6 @@ export default class Client {
   }
 
   setUuid(uuid: string) {
-    console.log(uuid)
     this.uuid = uuid;
   }
 
@@ -65,7 +64,6 @@ export default class Client {
   }
 
   host() {
-    console.log(this)
     if (this.uuid) {
       this.conn?.send(JSON.stringify({
         op: 'host',

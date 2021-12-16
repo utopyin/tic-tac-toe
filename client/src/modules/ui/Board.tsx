@@ -1,4 +1,3 @@
-import React from 'react';
 import { useWS } from '../ws/ws'
 import style from '../../style/board.module.scss'
 

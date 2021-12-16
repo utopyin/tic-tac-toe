@@ -52,6 +52,8 @@ export default class GameHandler {
         data: message
       }))
     });
+
+    this.sendRooms()
   }
 
   getRoom(uuid: string) {
@@ -83,8 +85,9 @@ export default class GameHandler {
   }
 
   getRooms() {
-    return Object.values(this.rooms).map(game => {
+    return Object.entries(this.rooms).map(([roomUUID, game]) => {
       return {
+        uuid: roomUUID,
         name: game.host.name,
         players: 1 + (game.challenger !== null ? 1 : 0)
       }

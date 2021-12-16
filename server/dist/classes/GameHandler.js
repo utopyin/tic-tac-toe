@@ -39,6 +39,7 @@ var GameHandler = /** @class */ (function () {
                 data: message
             }));
         });
+        this.sendRooms();
     };
     GameHandler.prototype.getRoom = function (uuid) {
         return this.players[uuid] != undefined ? this.players[uuid] : null;
@@ -65,8 +66,10 @@ var GameHandler = /** @class */ (function () {
         this.sendRooms();
     };
     GameHandler.prototype.getRooms = function () {
-        return Object.values(this.rooms).map(function (game) {
+        return Object.entries(this.rooms).map(function (_a) {
+            var roomUUID = _a[0], game = _a[1];
             return {
+                uuid: roomUUID,
                 name: game.host.name,
                 players: 1 + (game.challenger !== null ? 1 : 0)
             };

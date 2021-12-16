@@ -5,7 +5,7 @@ interface Props {
   children: React.ReactElement<any, any>
 }
 
-type Role = 'host' | 'challenger' | ''
+export type Role = 'host' | 'challenger' | ''
 
 interface IGameState {
   isOver: boolean;
@@ -14,8 +14,9 @@ interface IGameState {
 }
 
 interface IRoom {
-  name: string,
-  players: number
+  name: string;
+  players: number;
+  uuid: string;
 } 
 interface IState {
   client: Client;
