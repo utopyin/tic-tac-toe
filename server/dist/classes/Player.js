@@ -14,10 +14,13 @@ var Player = /** @class */ (function () {
             data: position
         }));
     };
-    Player.prototype.error = function (errorMessage) {
+    Player.prototype.error = function (message, title) {
         this.ws.send(JSON.stringify({
             op: 'error',
-            data: errorMessage
+            data: {
+                title: title,
+                message: message
+            }
         }));
     };
     Player.prototype.win = function (turn, forfeit) {
@@ -34,6 +37,11 @@ var Player = /** @class */ (function () {
         this.ws.send(JSON.stringify({
             op: 'lose',
             data: turn
+        }));
+    };
+    Player.prototype.leave = function () {
+        this.ws.send(JSON.stringify({
+            op: 'leave'
         }));
     };
     return Player;

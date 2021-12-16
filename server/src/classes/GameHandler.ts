@@ -21,7 +21,10 @@ export default class GameHandler {
     if (this.players[host.uuid] != undefined) {
       host.ws.send(JSON.stringify({
         op: 'error',
-        data: 'You can not join a game as you are already playing or hosting one.'
+        data: {
+          title: "You can't join this game",
+          message: 'You can not join a game as you are already playing or hosting one.'
+        }
       }))
     }
     const roomUuid = 'default'; //uuidV4()
@@ -40,7 +43,10 @@ export default class GameHandler {
     if (!game) {
       return challenger.ws.send(JSON.stringify({
         op: 'error',
-        data: 'The game was not found.'
+        data: {
+          title: "You can't join this game",
+          message: 'The game was not found.'
+        }
       }));
     }
 
@@ -49,7 +55,10 @@ export default class GameHandler {
     }).catch(message => {
       challenger.ws.send(JSON.stringify({
         op: 'error',
-        data: message
+        data: {
+          title: "You can't join this room",
+          message
+        }
       }))
     });
 

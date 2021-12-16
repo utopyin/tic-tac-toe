@@ -23,10 +23,13 @@ export default class Player {
     }))
   }
 
-  error(errorMessage: string) {
+  error(message: string, title?: string) {
     this.ws.send(JSON.stringify({
       op: 'error',
-      data: errorMessage
+      data: {
+        title,
+        message
+      }
     }))
   }
 
@@ -44,6 +47,12 @@ export default class Player {
     this.ws.send(JSON.stringify({
       op: 'lose',
       data: turn
+    }))
+  }
+
+  leave() {
+    this.ws.send(JSON.stringify({
+      op: 'leave'
     }))
   }
 }

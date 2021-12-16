@@ -11,7 +11,10 @@ var GameHandler = /** @class */ (function () {
         if (this.players[host.uuid] != undefined) {
             host.ws.send(JSON.stringify({
                 op: 'error',
-                data: 'You can not join a game as you are already playing or hosting one.'
+                data: {
+                    title: "You can't join this game",
+                    message: 'You can not join a game as you are already playing or hosting one.'
+                }
             }));
         }
         var roomUuid = 'default'; //uuidV4()
@@ -28,7 +31,10 @@ var GameHandler = /** @class */ (function () {
         if (!game) {
             return challenger.ws.send(JSON.stringify({
                 op: 'error',
-                data: 'The game was not found.'
+                data: {
+                    title: "You can't join this game",
+                    message: 'The game was not found.'
+                }
             }));
         }
         game.join(challenger).then(function () {
@@ -36,7 +42,10 @@ var GameHandler = /** @class */ (function () {
         }).catch(function (message) {
             challenger.ws.send(JSON.stringify({
                 op: 'error',
-                data: message
+                data: {
+                    title: "You can't join this room",
+                    message: message
+                }
             }));
         });
         this.sendRooms();

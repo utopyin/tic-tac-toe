@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import Client from './client'
+import { useNoti } from '../notifications/noti';
 
 interface Props {
   children: React.ReactElement<any, any>
@@ -51,6 +52,12 @@ export default ({children}: Props) => {
   const [role, setRole] = useState<Role>('')
   const [gameState, setGameState] = useState<IGameState>(defaultGameState);
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  const { addNoti } = useNoti();
+
+  const reset = () => {
+    setGameState(defaultGameState);
+    setRole('');
+  }
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');
@@ -66,6 +73,9 @@ export default ({children}: Props) => {
     ws.onmessage = (event) => {
       const { op, data } = JSON.parse(event.data);
       switch(op) {
+        case 'leave':
+          reset();
+          break;
         case 'hello':
           setUuid(data.uuid);
           break;
@@ -92,6 +102,13 @@ export default ({children}: Props) => {
             }
           })
           break;
+        case 'error':
+          addNoti({
+            title: data.title || 'Error',
+            message: data.message || 'Une erreur est survenue',
+            type: 'error'
+          })
+          break;    
       }
     }
   }, [])

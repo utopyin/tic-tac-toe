@@ -90,12 +90,17 @@ export default class Game {
   }
 
   leave(uuid: string) {
-    if (!this.challenger) return true; // if the game isn't full yet, return true => destroy the game and the player index in handler
+    if (!this.challenger) {
+      this.host.leave();
+      return true;
+    }
     if (uuid == this.host.uuid) { // if player == host
+      this.host.leave();
       this.challenger.win(this.turn, true) // challenger wins by forfeit
       this.isOver = true // game's over
       this.host = this.challenger // host becomes challenger
     } else if (uuid == this.challenger.uuid) {
+      this.challenger.leave();
       this.host.win(this.turn, true)  // host wins by forfeit
       this.isOver = true // game's over
       this.challenger = null // challenger left
