@@ -1,21 +1,29 @@
-import { useEffect, useState } from 'react';
 import { useWS } from './modules/ws/ws'
+import Board from './modules/ui/Board'
+import Rooms from './modules/ui/Rooms'
+import header from './style/header.module.scss'
+import './style/index.scss'
+import CheckIcon from '@mui/icons-material/Check';
+
+const changeNickname = () => {
+  const input = document.getElementById('nickname-input') as HTMLInputElement;
+  const value = input.value;
+  localStorage.setItem('@name', value || '');
+}
+
 
 function App() {
-  const { client, uuid } = useWS();
-
-  useEffect(() => {
-    console.log(client)
-  }, [client])
-
-  const click = () => {
-    client.hello()
-  }
+  const { role } = useWS();
 
   return (
-    <div className="App">
-      <button onClick={click}>Connect</button>
-      {uuid}
+    <div className="app">
+      <div className={header.Header}>
+        <div className={header.Input}>
+          <input type="text" id="nickname-input" placeholder="nickname"></input>
+          <div onClick={changeNickname}><CheckIcon /></div>
+        </div>
+      </div>
+      { role ? <Board /> : <Rooms /> }
     </div>
   )
 }

@@ -1,0 +1,45 @@
+.Header {
+  height: 35px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  .Input {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    input {
+      padding: 0px 10px;
+      border: none;
+      background: var(--dark-grey);
+      outline: none;
+      color: var(--grey);
+      height: 100%;
+    }
+
+    div {
+      padding: 10px 10px;
+      background: var(--dark-grey);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all ease 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--grey);
+        svg {
+          fill: var(--dark-grey);
+        }
+      }
+
+      svg {
+        fill: var(--grey);
+      }
+    }
+  }
+}

@@ -22,11 +22,19 @@ var Game = /** @class */ (function () {
             _this.challenger = new Player_1.default(challenger);
             _this.host.ws.send(JSON.stringify({
                 op: 'join',
-                data: challenger.name
+                data: {
+                    opponent: {
+                        name: challenger.name
+                    }
+                }
             }));
             challenger.ws.send(JSON.stringify({
                 op: 'join',
-                data: _this.host.name
+                data: {
+                    opponent: {
+                        name: _this.host.name
+                    }
+                }
             }));
             resolve();
         });

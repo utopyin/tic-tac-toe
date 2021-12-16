@@ -22,11 +22,21 @@ export function onMessage(this: WebSocket, payload: RawData) {
       case 'hello':
         this.send(JSON.stringify({
           op: 'hello',
-          data: uuidV4()
+          data: {
+            uuid: uuidV4()
+          }
         }))
         break;
       case 'leave':
         gameHandler.leave(data.uuid)
+        break;
+      case 'rooms':
+        this.send(JSON.stringify({
+          op: 'rooms',
+          data: {
+            rooms: gameHandler.getRooms()
+          }
+        }))
         break;
     }
   } catch(e) {

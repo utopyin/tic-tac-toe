@@ -1,6 +1,6 @@
 import Game from "./Game"
 import { PlayerProps } from "./Player";
-import { v4 as  uuidV4 } from 'uuid'
+import WSS from '../server'
 
 interface Indexes {
   [key: string]: string
@@ -24,9 +24,15 @@ export default class GameHandler {
         data: 'You can not join a game as you are already playing or hosting one.'
       }))
     }
-    const roomUuid = uuidV4()
+    const roomUuid = 'default'; //uuidV4()
     this.rooms[roomUuid] = new Game(host);
-    this.players[host.uuid] = roomUuid
+    this.players[host.uuid] = roomUuid;
+    
+    host.ws.send(JSON.stringify({
+      op: 'host'
+    }));
+    
+    this.sendRooms();
   }
 
   join(roomUUID: string, challenger: PlayerProps) {
@@ -73,5 +79,26 @@ export default class GameHandler {
         delete this.players[uuid]
       }
     }
+    this.sendRooms();
+  }
+
+  getRooms() {
+    return Object.values(this.rooms).map(game => {
+      return {
+        name: game.host.name,
+        players: 1 + (game.challenger !== null ? 1 : 0)
+      }
+    });
+  }
+
+  sendRooms() {
+    WSS.clients.forEach(client => {
+      client.send(JSON.stringify({
+        op: 'rooms',
+        data: {
+          rooms: this.getRooms()
+        }
+      }))
+    })
   }
 }

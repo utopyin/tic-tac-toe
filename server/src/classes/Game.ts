@@ -21,11 +21,19 @@ export default class Game {
 
       this.host.ws.send(JSON.stringify({
         op: 'join',
-        data: challenger.name
+        data: {
+          opponent: {
+            name: challenger.name
+          }
+        }
       }))
       challenger.ws.send(JSON.stringify({
         op: 'join',
-        data: this.host.name
+        data: {
+          opponent: {
+            name: this.host.name
+          }
+        }
       }))
 
       resolve()

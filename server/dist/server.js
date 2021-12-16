@@ -5,7 +5,7 @@ var ws_1 = require("ws");
 var GameHandler_1 = require("./classes/GameHandler");
 var handlers_1 = require("./handlers");
 exports.gameHandler = new GameHandler_1.default();
-new ws_1.WebSocketServer({ port: 8080 })
+exports.default = new ws_1.WebSocketServer({ port: 8080 })
     .on('connection', function (ws) {
     console.log('connected!');
     ws.on('message', handlers_1.onMessage);

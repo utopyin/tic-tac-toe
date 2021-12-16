@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Game_1 = require("./Game");
-var uuid_1 = require("uuid");
+var server_1 = require("../server");
 var GameHandler = /** @class */ (function () {
     function GameHandler() {
         this.players = {};
@@ -14,9 +14,13 @@ var GameHandler = /** @class */ (function () {
                 data: 'You can not join a game as you are already playing or hosting one.'
             }));
         }
-        var roomUuid = (0, uuid_1.v4)();
+        var roomUuid = 'default'; //uuidV4()
         this.rooms[roomUuid] = new Game_1.default(host);
         this.players[host.uuid] = roomUuid;
+        host.ws.send(JSON.stringify({
+            op: 'host'
+        }));
+        this.sendRooms();
     };
     GameHandler.prototype.join = function (roomUUID, challenger) {
         var _this = this;
@@ -58,6 +62,26 @@ var GameHandler = /** @class */ (function () {
                 delete this.players[uuid];
             }
         }
+        this.sendRooms();
+    };
+    GameHandler.prototype.getRooms = function () {
+        return Object.values(this.rooms).map(function (game) {
+            return {
+                name: game.host.name,
+                players: 1 + (game.challenger !== null ? 1 : 0)
+            };
+        });
+    };
+    GameHandler.prototype.sendRooms = function () {
+        var _this = this;
+        server_1.default.clients.forEach(function (client) {
+            client.send(JSON.stringify({
+                op: 'rooms',
+                data: {
+                    rooms: _this.getRooms()
+                }
+            }));
+        });
     };
     return GameHandler;
 }());

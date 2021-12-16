@@ -24,11 +24,21 @@ function onMessage(payload) {
             case 'hello':
                 this.send(JSON.stringify({
                     op: 'hello',
-                    data: (0, uuid_1.v4)()
+                    data: {
+                        uuid: (0, uuid_1.v4)()
+                    }
                 }));
                 break;
             case 'leave':
                 server_1.gameHandler.leave(data.uuid);
+                break;
+            case 'rooms':
+                this.send(JSON.stringify({
+                    op: 'rooms',
+                    data: {
+                        rooms: server_1.gameHandler.getRooms()
+                    }
+                }));
                 break;
         }
     }
