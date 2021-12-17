@@ -53,6 +53,7 @@ var Game = /** @class */ (function () {
         var _this = this;
         var uuid = data.uuid, position = data.position;
         var player = this.getPlayer(uuid);
+        var type = this.host.uuid == (player === null || player === void 0 ? void 0 : player.uuid) ? 'host' : 'challenger';
         if (player) {
             if (this.isOver)
                 return player.error("You can't play, the game is over !");
@@ -63,8 +64,8 @@ var Game = /** @class */ (function () {
                 this.grid.updateCase(position, uuid)
                     .then(function () {
                     var _a;
-                    _this.host.update(position);
-                    (_a = _this.challenger) === null || _a === void 0 ? void 0 : _a.update(position);
+                    _this.host.update(position, type);
+                    (_a = _this.challenger) === null || _a === void 0 ? void 0 : _a.update(position, type);
                     !_this.isGameOver() && _this.nextPlayer();
                 })
                     .catch(function () { return player.error('This case is not empty.'); });
@@ -88,19 +89,26 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.leave = function (uuid) {
         if (!this.challenger) {
-            this.host.leave();
+            this.host.leave(uuid);
             return true;
         }
         if (uuid == this.host.uuid) { // if player == host
-            this.host.leave();
-            this.challenger.win(this.turn, true); // challenger wins by forfeit
-            this.isOver = true; // game's over
+            this.host.leave(uuid);
+            this.challenger.leave(uuid);
+            if (!this.isOver) {
+                this.challenger.win(this.turn, true); // challenger wins by forfeit
+                this.isOver = true; // game's over
+            }
             this.host = this.challenger; // host becomes challenger
+            this.challenger = null;
         }
         else if (uuid == this.challenger.uuid) {
-            this.challenger.leave();
-            this.host.win(this.turn, true); // host wins by forfeit
-            this.isOver = true; // game's over
+            this.host.leave(uuid);
+            this.challenger.leave(uuid);
+            if (!this.isOver) {
+                this.host.win(this.turn, true); // host wins by forfeit
+                this.isOver = true; // game's over
+            }
             this.challenger = null; // challenger left
         }
         return false; // the game isn't destroyed

@@ -8,7 +8,7 @@ export default class Client {
     const name = localStorage.getItem('@name');
     this.conn = conn;
     this.uuid = '';
-    this.name = name || 'Player';
+    this.name = name || '';
   }
 
   setUuid(uuid: string) {

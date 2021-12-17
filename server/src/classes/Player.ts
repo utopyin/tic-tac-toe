@@ -12,14 +12,17 @@ export default class Player {
   constructor({uuid, ws, name}: PlayerProps) {
     this.uuid = uuid;
     this.ws = ws;
-    this.name = name;
+    this.name = name || 'Player';
     // const symbols: Symbol[] = ["O", "\u262b"];
   }
 
-  update(position: Position) {
+  update(position: Position, state: 'challenger' | 'host') {
     this.ws.send(JSON.stringify({
       op: 'update',
-      data: position
+      data: {
+        position,
+        state
+      }
     }))
   }
 
@@ -43,16 +46,22 @@ export default class Player {
     }))
   }
 
-  lose(turn: number) {
+  lose(turn: number, forfeit: boolean = false) {
     this.ws.send(JSON.stringify({
       op: 'lose',
-      data: turn
+      data: {
+        turn,
+        forfeit
+      }
     }))
   }
 
-  leave() {
+  leave(uuid: string) {
     this.ws.send(JSON.stringify({
-      op: 'leave'
+      op: 'leave',
+      data: {
+        who: uuid == this.uuid ? 'you' : 'them'
+      }
     }))
   }
 }

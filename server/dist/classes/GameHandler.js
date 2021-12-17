@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Game_1 = require("./Game");
 var server_1 = require("../server");
+var uuid_1 = require("uuid");
 var GameHandler = /** @class */ (function () {
     function GameHandler() {
         this.players = {};
@@ -12,12 +13,12 @@ var GameHandler = /** @class */ (function () {
             host.ws.send(JSON.stringify({
                 op: 'error',
                 data: {
-                    title: "You can't join this game",
-                    message: 'You can not join a game as you are already playing or hosting one.'
+                    title: "You can't host a game",
+                    message: 'You can not host a game as you are already playing or hosting one.'
                 }
             }));
         }
-        var roomUuid = 'default'; //uuidV4()
+        var roomUuid = (0, uuid_1.v4)();
         this.rooms[roomUuid] = new Game_1.default(host);
         this.players[host.uuid] = roomUuid;
         host.ws.send(JSON.stringify({
@@ -69,9 +70,9 @@ var GameHandler = /** @class */ (function () {
                 if (needDestroy) {
                     delete this.rooms[roomUUID];
                 }
-                delete this.players[uuid];
             }
         }
+        delete this.players[uuid];
         this.sendRooms();
     };
     GameHandler.prototype.getRooms = function () {
@@ -80,7 +81,7 @@ var GameHandler = /** @class */ (function () {
             return {
                 uuid: roomUUID,
                 name: game.host.name,
-                players: 1 + (game.challenger !== null ? 1 : 0)
+                players: (game.host ? 1 : 0) + (game.challenger ? 1 : 0)
             };
         });
     };

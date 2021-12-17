@@ -1,6 +1,7 @@
 import Game from "./Game"
 import { PlayerProps } from "./Player";
 import WSS from '../server'
+import { v4 as uuidV4 } from 'uuid';
 
 interface Indexes {
   [key: string]: string
@@ -22,12 +23,12 @@ export default class GameHandler {
       host.ws.send(JSON.stringify({
         op: 'error',
         data: {
-          title: "You can't join this game",
-          message: 'You can not join a game as you are already playing or hosting one.'
+          title: "You can't host a game",
+          message: 'You can not host a game as you are already playing or hosting one.'
         }
       }))
     }
-    const roomUuid = 'default'; //uuidV4()
+    const roomUuid = uuidV4();
     this.rooms[roomUuid] = new Game(host);
     this.players[host.uuid] = roomUuid;
     
@@ -87,9 +88,9 @@ export default class GameHandler {
         if (needDestroy) {
           delete this.rooms[roomUUID]
         }
-        delete this.players[uuid]
       }
     }
+    delete this.players[uuid]
     this.sendRooms();
   }
 
@@ -98,7 +99,7 @@ export default class GameHandler {
       return {
         uuid: roomUUID,
         name: game.host.name,
-        players: 1 + (game.challenger !== null ? 1 : 0)
+        players: (game.host ? 1 : 0) + (game.challenger ? 1 : 0)
       }
     });
   }

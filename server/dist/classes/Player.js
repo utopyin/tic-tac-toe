@@ -5,13 +5,16 @@ var Player = /** @class */ (function () {
         var uuid = _a.uuid, ws = _a.ws, name = _a.name;
         this.uuid = uuid;
         this.ws = ws;
-        this.name = name;
+        this.name = name || 'Player';
         // const symbols: Symbol[] = ["O", "\u262b"];
     }
-    Player.prototype.update = function (position) {
+    Player.prototype.update = function (position, state) {
         this.ws.send(JSON.stringify({
             op: 'update',
-            data: position
+            data: {
+                position: position,
+                state: state
+            }
         }));
     };
     Player.prototype.error = function (message, title) {
@@ -33,15 +36,22 @@ var Player = /** @class */ (function () {
             }
         }));
     };
-    Player.prototype.lose = function (turn) {
+    Player.prototype.lose = function (turn, forfeit) {
+        if (forfeit === void 0) { forfeit = false; }
         this.ws.send(JSON.stringify({
             op: 'lose',
-            data: turn
+            data: {
+                turn: turn,
+                forfeit: forfeit
+            }
         }));
     };
-    Player.prototype.leave = function () {
+    Player.prototype.leave = function (uuid) {
         this.ws.send(JSON.stringify({
-            op: 'leave'
+            op: 'leave',
+            data: {
+                who: uuid == this.uuid ? 'you' : 'them'
+            }
         }));
     };
     return Player;

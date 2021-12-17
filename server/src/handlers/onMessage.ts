@@ -1,8 +1,7 @@
-import { RawData, WebSocket } from 'ws';
-import { gameHandler } from '../server'
-import { v4 as uuidV4 } from 'uuid'; 
+import { RawData } from 'ws';
+import { gameHandler, ExtWebSocket } from '../server'
 
-export function onMessage(this: WebSocket, payload: RawData) {
+export function onMessage(socket: ExtWebSocket, payload: RawData) {
   try {
     const { op, data } = JSON.parse(payload.toString())
     switch(op) {
@@ -10,20 +9,24 @@ export function onMessage(this: WebSocket, payload: RawData) {
         gameHandler.create({
           uuid: data.uuid,
           name: data.name,
-          ws: this,
+          ws: socket,
         })
         break;
       case 'play':
         gameHandler.getGameByPlayer(data.uuid)?.play(data);
         break;
       case 'join':
-        gameHandler.join(data.room, { uuid: data.uuid, ws: this, name: data.name })
+        gameHandler.join(data.room, {
+          uuid: data.uuid,
+          ws: socket,
+          name: data.name
+        })
         break;
       case 'hello':
-        this.send(JSON.stringify({
+        socket.send(JSON.stringify({
           op: 'hello',
           data: {
-            uuid: uuidV4()
+            uuid: socket.uuid
           }
         }))
         break;
@@ -31,7 +34,7 @@ export function onMessage(this: WebSocket, payload: RawData) {
         gameHandler.leave(data.uuid)
         break;
       case 'rooms':
-        this.send(JSON.stringify({
+        socket.send(JSON.stringify({
           op: 'rooms',
           data: {
             rooms: gameHandler.getRooms()
