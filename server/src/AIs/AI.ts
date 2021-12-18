@@ -1,6 +1,11 @@
 import Case, { Position } from "../classes/case";
+export interface proposition {
+    priority : "-2" | "1" | "2";
+    placements : Position[] ;
+}
 
-export class AI {
+
+export default class AI {
     uuid;name: string| null
     constructor(uuid:string) {
         this.uuid = uuid
@@ -22,7 +27,25 @@ export class AI {
         return true
     }
 
-    calculatePscore(combinaison : Position[]):boolean | string {
-        return false
+    calculatePscore(combinaison : Array<Position>, Board:Array<Case>) : proposition | null{
+        let prority = 0
+        let placements = [] as Position[]
+        combinaison.forEach(x => {
+            if (Board[x].value) {
+                if (Board[x].value == this.uuid) {
+                    prority ++
+                }else {
+                    prority --
+                }
+            } else {
+                placements.push(x)
+            }
+        })
+
+        let proposition = {
+            'priority' : prority.toString(),
+            'placements' : placements as Position[]
+        }
+        return proposition.placements[0] == undefined && proposition.priority == "-1"? null : (proposition as proposition) 
     }
 }

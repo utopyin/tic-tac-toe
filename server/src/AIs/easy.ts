@@ -1,6 +1,6 @@
 import { Position } from '../classes/case';
 import Grid from '../classes/Grid';
-import { AI } from './AI';
+import AI from './AI';
 
 
 export class EasyAI extends AI{
