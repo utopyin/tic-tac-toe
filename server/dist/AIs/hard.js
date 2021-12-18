@@ -15,21 +15,19 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MediumAI = void 0;
+exports.EasyAI = void 0;
 var AI_1 = require("./AI");
-var MediumAI = /** @class */ (function (_super) {
-    __extends(MediumAI, _super);
-    function MediumAI(uuid) {
+var EasyAI = /** @class */ (function (_super) {
+    __extends(EasyAI, _super);
+    function EasyAI(uuid) {
         var _this = _super.call(this, uuid) || this;
         _this.uuid = uuid;
         return _this;
     }
-    MediumAI.prototype.play = function (Board) {
-        if (this.isBoardEmpty(Board.tableau))
-            return this.getRandomCase(Board.tableau);
-        return 0;
+    EasyAI.prototype.play = function (Board) {
+        return this.getRandomCase(Board.tableau);
     };
-    return MediumAI;
+    return EasyAI;
 }(AI_1.AI));
-exports.MediumAI = MediumAI;
-//# sourceMappingURL=medium.js.map
+exports.EasyAI = EasyAI;
+//# sourceMappingURL=hard.js.map

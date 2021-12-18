@@ -13,6 +13,16 @@ var AI = /** @class */ (function () {
         }
         return caseu;
     };
+    AI.prototype.isBoardEmpty = function (Board) {
+        Board.forEach(function (Case) {
+            if (Case.value)
+                return false;
+        });
+        return true;
+    };
+    AI.prototype.calculatePscore = function (combinaison) {
+        return false;
+    };
     return AI;
 }());
 exports.AI = AI;

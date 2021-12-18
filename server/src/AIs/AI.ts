@@ -14,4 +14,15 @@ export class AI {
         }
         return (caseu as Position)
     }
+
+    isBoardEmpty(Board :Array<Case>):boolean {
+        Board.forEach(Case => {
+            if (Case.value) return false
+        });
+        return true
+    }
+
+    calculatePscore(combinaison : Position[]):boolean | string {
+        return false
+    }
 }
