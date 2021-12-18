@@ -5,37 +5,23 @@ import Rooms from './modules/ui/Rooms';
 import header from './style/header.module.scss';
 import './style/index.scss';
 import CheckIcon from '@mui/icons-material/Check';
-import HostOrLeave from './modules/ui/HostOrLeave';
-import { useEffect } from 'react';
-
-const changeNickname = () => {
-  const input = document.getElementById('nickname-input') as HTMLInputElement;
-  const value = input.value;
-  localStorage.setItem('@name', value || '');
-  input.value = "";
-}
-
+import HostOrLeave from './modules/ui/Controller';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const { role } = useWS();
-  const { addNoti } = useNoti()
-
-  useEffect(() => {
-    setInterval(() => addNoti({
-      title: 'Exemple',
-      type: 'error',
-      timestamp: 1,
-      text: "ceci est un texte super long qui sert d'exemple"
-    }), 3000)
-    
-  }, [])
-
+  const { role, client, updateNickname } = useWS();
+  
   return (
     <div className="app">
       <div className={header.Header}>
         <div className={header.Input}>
-          <input type="text" id="nickname-input" placeholder="nickname"></input>
-          <div onClick={changeNickname}><CheckIcon /></div>
+          <input
+            type="text" id="nickname-input"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') updateNickname();
+            }}
+            placeholder={client.name ? `Playing as ${client.name}` : 'nickname'}></input>
+          <div onClick={updateNickname}><CheckIcon /></div>
         </div>
         <HostOrLeave />
       </div>

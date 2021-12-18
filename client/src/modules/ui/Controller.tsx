@@ -8,7 +8,7 @@ export default () => {
 
   const click = () => role ? client.leave() : client.host();
 
-  return <div className={style.HostOrLeave} onClick={click}>
-    { role ? <LogoutIcon style={{width: 20}}/> : <AddIcon /> }
+  return <div className={`${style.Controller} ${role && style.leave}`} onClick={click}>
+    { role ? <LogoutIcon /> : <AddIcon style={{width: 30, height: 30}}/> }
   </div>
 }

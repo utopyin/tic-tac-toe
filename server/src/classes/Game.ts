@@ -3,7 +3,7 @@ import Grid from './Grid'
 import Player, { PlayerProps } from './Player'
 
 export default class Game {
-  host; challenger; index; grid; turn;isOver:boolean;
+  host; challenger; index; grid; turn; isOver;
   constructor(host: PlayerProps, challenger: PlayerProps | null = null) {
     this.host = new Player(host);
     this.challenger = challenger ? new Player(challenger) : null;
@@ -57,6 +57,7 @@ export default class Game {
   play(data: moveData) {
     const { uuid, position } = data
     const player = this.getPlayer(uuid);
+    const type = this.host.uuid == player?.uuid ? 'host' : 'challenger';
     if (player) {
       if (this.isOver) return player.error("You can't play, the game is over !")
       if (!this.challenger) return player.error('The game has not started yet!')
@@ -65,8 +66,8 @@ export default class Game {
       if (activePlayer?.uuid == uuid) {
         this.grid.updateCase(position, uuid)
           .then(() => {
-            this.host.update(position);
-            this.challenger?.update(position);
+            this.host.update(position, type);
+            this.challenger?.update(position, type);
             !this.isGameOver() && this.nextPlayer();
           })
           .catch(() => player.error('This case is not empty.'))
@@ -90,14 +91,26 @@ export default class Game {
   }
 
   leave(uuid: string) {
-    if (!this.challenger) return true; // if the game isn't full yet, return true => destroy the game and the player index in handler
+    if (!this.challenger) {
+      this.host.leave(uuid);
+      return true;
+    }
     if (uuid == this.host.uuid) { // if player == host
-      this.challenger.win(this.turn, true) // challenger wins by forfeit
-      this.isOver = true // game's over
+      this.host.leave(uuid);
+      this.challenger.leave(uuid);
+      if (!this.isOver) {
+        this.challenger.win(this.turn, true) // challenger wins by forfeit
+        this.isOver = true // game's over
+      }
       this.host = this.challenger // host becomes challenger
+      this.challenger = null
     } else if (uuid == this.challenger.uuid) {
-      this.host.win(this.turn, true)  // host wins by forfeit
-      this.isOver = true // game's over
+      this.host.leave(uuid);
+      this.challenger.leave(uuid);
+      if (!this.isOver) {
+        this.host.win(this.turn, true)  // host wins by forfeit
+        this.isOver = true // game's over
+      }
       this.challenger = null // challenger left
     }
     return false // the game isn't destroyed

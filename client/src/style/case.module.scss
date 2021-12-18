@@ -1,0 +1,60 @@
+.Case {
+  width: 140px;
+  height: 140px;
+  background: var(--greyish);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--grey);
+
+    &::after {
+      background: var(--darkish);
+    }
+  }
+
+  &.blocked {
+    cursor: default;
+
+    &:hover {
+      background: var(--greyish);
+    }
+
+    &::after {
+      opacity: 0;
+    }
+  }
+
+  svg {
+    z-index: 2;
+    width: 35%;
+
+    &.challenger {
+      fill: var(--red);
+    }
+
+    &.host {
+      fill: var(--green);
+    }
+  }
+
+  &::after {
+    z-index: 1;
+    position: absolute;
+    content: '';
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15%;
+    height: 15%;
+    border-radius: 100px;
+    background: transparent;
+    border: 5px solid var(--darkish);
+    transition: all 0.3s ease;
+  }
+}

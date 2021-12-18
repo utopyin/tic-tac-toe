@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onMessage = void 0;
 var server_1 = require("../server");
-var uuid_1 = require("uuid");
-function onMessage(payload) {
+function onMessage(socket, payload) {
     var _a;
     try {
         var _b = JSON.parse(payload.toString()), op = _b.op, data = _b.data;
@@ -12,20 +11,24 @@ function onMessage(payload) {
                 server_1.gameHandler.create({
                     uuid: data.uuid,
                     name: data.name,
-                    ws: this,
+                    ws: socket,
                 });
                 break;
             case 'play':
                 (_a = server_1.gameHandler.getGameByPlayer(data.uuid)) === null || _a === void 0 ? void 0 : _a.play(data);
                 break;
             case 'join':
-                server_1.gameHandler.join(data.room, { uuid: data.uuid, ws: this, name: data.name });
+                server_1.gameHandler.join(data.room, {
+                    uuid: data.uuid,
+                    ws: socket,
+                    name: data.name
+                });
                 break;
             case 'hello':
-                this.send(JSON.stringify({
+                socket.send(JSON.stringify({
                     op: 'hello',
                     data: {
-                        uuid: (0, uuid_1.v4)()
+                        uuid: socket.uuid
                     }
                 }));
                 break;
@@ -33,7 +36,7 @@ function onMessage(payload) {
                 server_1.gameHandler.leave(data.uuid);
                 break;
             case 'rooms':
-                this.send(JSON.stringify({
+                socket.send(JSON.stringify({
                     op: 'rooms',
                     data: {
                         rooms: server_1.gameHandler.getRooms()
