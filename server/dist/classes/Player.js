@@ -54,6 +54,11 @@ var Player = /** @class */ (function () {
             }
         }));
     };
+    Player.prototype.reset = function () {
+        this.ws.send(JSON.stringify({
+            op: 'rematch'
+        }));
+    };
     return Player;
 }());
 exports.default = Player;

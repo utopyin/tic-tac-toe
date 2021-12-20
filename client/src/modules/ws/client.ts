@@ -74,4 +74,13 @@ export default class Client {
       }));
     }
   }
+
+  rematch() {
+    this.conn?.send(JSON.stringify({
+      op: 'rematch',
+      data: {
+        uuid: this.uuid
+      }
+    }))
+  }
 }

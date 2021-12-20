@@ -3,14 +3,17 @@ import Grid from './Grid'
 import Player, { PlayerProps } from './Player'
 
 export default class Game {
-  host; challenger; index; grid; turn; isOver;
+  host; challenger; index; grid; turn; isOver; isRematch; rematcher; resets;
   constructor(host: PlayerProps, challenger: PlayerProps | null = null) {
     this.host = new Player(host);
     this.challenger = challenger ? new Player(challenger) : null;
     this.index = 0;
     this.turn = 0;
+    this.resets = 0;
     this.grid = new Grid();
-    this.isOver = false
+    this.isOver = false;
+    this.isRematch = false;
+    this.rematcher = '';
   }
 
   join(challenger: PlayerProps) {
@@ -42,11 +45,11 @@ export default class Game {
   }
 
   whoPlays() {
-    return this.index == 0 ? this.host : this.challenger;
+    return (this.index + this.resets) % 2 == 0 ? this.host : this.challenger;
   }
 
   whoWaits() {
-    return this.index == 0 ? this.challenger : this.host;
+    return (this.index + this.resets) % 2 == 0 ? this.challenger : this.host;
   }
 
   nextPlayer() {
@@ -116,4 +119,21 @@ export default class Game {
     return false // the game isn't destroyed
   }
   
+  reset() {
+    this.index = 0;
+    this.turn = 0;
+    this.grid = new Grid();
+    this.isOver = false;
+    this.isRematch = false;
+    this.rematcher = '';
+    this.resets += 1;
+    this.host.reset();
+    this.challenger?.reset();
+  }
+
+  rematch(uuid: string) {
+    if (this.isRematch && this.rematcher != uuid) return this.reset();
+    this.rematcher = uuid;
+    this.isRematch = true;
+  }
 }
