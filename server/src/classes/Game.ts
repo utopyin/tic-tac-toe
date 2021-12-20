@@ -117,3 +117,29 @@ export default class Game {
   }
   
 }
+
+
+export class GameIA extends Game{
+
+  play(data: moveData) {
+    const { uuid, position } = data
+    const player = this.getPlayer(uuid);
+    const type = this.host.uuid == player?.uuid ? 'host' : 'challenger';
+    if (player) {
+      if (this.isOver) return player.error("You can't play, the game is over !")
+      if (!this.challenger) return player.error('The game has not started yet!')
+
+      const activePlayer = this.whoPlays()
+      if (activePlayer?.uuid == uuid) {
+        this.grid.updateCase(position, uuid)
+          .then(() => {
+            this.host.update(position, type);
+            !this.isGameOver() && this.nextPlayer();
+          })
+          .catch(() => player.error('This case is not empty.'))
+        return 
+      }
+      return player.error('Your opponent has not played yet!')
+    }
+  }
+}

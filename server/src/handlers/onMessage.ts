@@ -10,7 +10,7 @@ export function onMessage(socket: ExtWebSocket, payload: RawData) {
           uuid: data.uuid,
           name: data.name,
           ws: socket,
-        })
+        }, data.options)
         break;
       case 'play':
         gameHandler.getGameByPlayer(data.uuid)?.play(data);

@@ -7,6 +7,10 @@ export interface PlayerProps {
   ws: WebSocket;
 }
 
+export interface Options {
+  ai : 1 | 2 | 3 ; 
+}
+
 export default class Player {
   uuid; ws; name;
   constructor({uuid, ws, name}: PlayerProps) {

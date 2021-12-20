@@ -1,5 +1,5 @@
-import Game from "./Game"
-import { PlayerProps } from "./Player";
+import Game, { GameIA } from "./Game"
+import { PlayerProps, Options } from "./Player";
 import WSS from '../server'
 import { v4 as uuidV4 } from 'uuid';
 
@@ -18,7 +18,7 @@ export default class GameHandler {
     this.rooms = {}
   }
   
-  create(host: PlayerProps): void {
+  create(host: PlayerProps, options : Options | null = null): void {
     if (this.players[host.uuid] != undefined) {
       host.ws.send(JSON.stringify({
         op: 'error',
@@ -29,7 +29,7 @@ export default class GameHandler {
       }))
     }
     const roomUuid = uuidV4();
-    this.rooms[roomUuid] = new Game(host);
+    this.rooms[roomUuid] = options?.ai ? new Game(host) : new GameIA(host, );
     this.players[host.uuid] = roomUuid;
     
     host.ws.send(JSON.stringify({
