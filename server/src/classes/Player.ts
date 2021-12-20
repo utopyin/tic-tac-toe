@@ -68,4 +68,10 @@ export default class Player {
       }
     }))
   }
+
+  reset() {
+    this.ws.send(JSON.stringify({
+      op: 'rematch'
+    }))
+  }
 }

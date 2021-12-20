@@ -35,7 +35,8 @@ interface IState {
   rooms: IRoom[];
   cases: ICase[];
   reset: () => void;
-  updateNickname: () => void
+  updateNickname: () => void;
+  resets: number;
 }
 
 const defaultClient = new Client();
@@ -66,6 +67,7 @@ const WSContext = createContext<IState>({
   cases: defaultCases,
   reset: () => {},
   updateNickname: () => {},
+  resets: 0
 })
 
 export default ({children}: Props) => {
@@ -77,11 +79,28 @@ export default ({children}: Props) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [cases, setCases] = useState<ICase[]>(defaultCases);
   const { addNoti } = useNoti();
+  const [resets, setResets] = useState(0);
 
-  const reset = () => {
-    setGameState(defaultGameState);
+  const reset = (isRematch: boolean = false) => {
     setCases(defaultCases);
+    if (isRematch) {
+      setGameState(old => {
+        return {
+          ...old,
+          ...{
+            turn: 0,
+            isOver: false,
+            forfeit: false
+          }
+        }
+      });
+      setCases(defaultCases);
+      setResets(oldResets => oldResets + 1);
+      return 
+    }
+    setGameState(defaultGameState);
     setRole('');
+    setResets(0);
   }
 
   function end(forfeit: boolean = false) {
@@ -130,6 +149,9 @@ export default ({children}: Props) => {
     ws.onmessage = (event) => {
       const { op, data } = JSON.parse(event.data);
       switch(op) {
+        case 'rematch':
+          reset(true);
+          break;
         case 'leave':
           if (data.who == 'you') return reset();
           setGameState(old => {return {...old, opponent: undefined}})
@@ -183,7 +205,8 @@ export default ({children}: Props) => {
     rooms,
     cases,
     reset,
-    updateNickname
+    updateNickname,
+    resets
   }
 
   return (

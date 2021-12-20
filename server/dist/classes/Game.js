@@ -9,8 +9,11 @@ var Game = /** @class */ (function () {
         this.challenger = challenger ? new Player_1.default(challenger) : null;
         this.index = 0;
         this.turn = 0;
+        this.resets = 0;
         this.grid = new Grid_1.default();
         this.isOver = false;
+        this.isRematch = false;
+        this.rematcher = '';
     }
     Game.prototype.join = function (challenger) {
         var _this = this;
@@ -40,10 +43,10 @@ var Game = /** @class */ (function () {
         });
     };
     Game.prototype.whoPlays = function () {
-        return this.index == 0 ? this.host : this.challenger;
+        return (this.index + this.resets) % 2 == 0 ? this.host : this.challenger;
     };
     Game.prototype.whoWaits = function () {
-        return this.index == 0 ? this.challenger : this.host;
+        return (this.index + this.resets) % 2 == 0 ? this.challenger : this.host;
     };
     Game.prototype.nextPlayer = function () {
         this.index = (this.index + 1) % 2;
@@ -112,6 +115,24 @@ var Game = /** @class */ (function () {
             this.challenger = null; // challenger left
         }
         return false; // the game isn't destroyed
+    };
+    Game.prototype.reset = function () {
+        var _a;
+        this.index = 0;
+        this.turn = 0;
+        this.grid = new Grid_1.default();
+        this.isOver = false;
+        this.isRematch = false;
+        this.rematcher = '';
+        this.resets += 1;
+        this.host.reset();
+        (_a = this.challenger) === null || _a === void 0 ? void 0 : _a.reset();
+    };
+    Game.prototype.rematch = function (uuid) {
+        if (this.isRematch && this.rematcher != uuid)
+            return this.reset();
+        this.rematcher = uuid;
+        this.isRematch = true;
     };
     return Game;
 }());

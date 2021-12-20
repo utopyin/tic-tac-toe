@@ -5,6 +5,9 @@ export function onMessage(socket: ExtWebSocket, payload: RawData) {
   try {
     const { op, data } = JSON.parse(payload.toString())
     switch(op) {
+      case 'rematch':
+        gameHandler.getGameByPlayer(data.uuid)?.rematch(data.uuid);
+        break;
       case 'host':
         gameHandler.create({
           uuid: data.uuid,
