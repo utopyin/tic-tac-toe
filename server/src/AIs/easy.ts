@@ -3,10 +3,10 @@ import Grid from '../classes/Grid';
 import AI from './AI';
 
 
-export class EasyAI extends AI{
-    constructor(uuid:string) {
-        super(uuid)
-        this.uuid = uuid;
+export default class EasyAI extends AI{
+    constructor() {
+        super()
+        this.name = "SuperEasyAI"
     }
 
     play(Board:Grid):Position{

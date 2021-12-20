@@ -3,10 +3,10 @@ import Grid from '../classes/Grid';
 import AI from './AI'
 
 
-export class MediumAI extends AI{
-    constructor(uuid:string) {
-        super(uuid)
-        this.uuid = uuid
+export default class MediumAI extends AI{
+    constructor() {
+        super()
+        this.name = "I'm a human I swear"
     }
     
     play(Board:Grid):Position {

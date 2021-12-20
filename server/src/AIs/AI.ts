@@ -1,4 +1,5 @@
 import Case, { Position } from "../classes/case";
+import Grid from "../classes/Grid";
 export interface proposition {
     priority : "-2" | "1" | "2";
     placements : Position[] ;
@@ -7,9 +8,13 @@ export interface proposition {
 
 export default class AI {
     uuid;name: string| null
-    constructor(uuid:string) {
-        this.uuid = uuid
+    constructor() {
+        this.uuid = "SomeAI"
         this.name = "AlphaTicTacToe"
+    }
+
+    play(Board:Grid):Position{
+        return (0 as Position)
     }
 
     getRandomCase(Board:Array<Case>):Position{

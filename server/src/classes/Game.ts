@@ -1,3 +1,4 @@
+import AI from '../AIs/AI';
 import { moveData } from '../handlers/types';
 import Grid from './Grid'
 import Player, { PlayerProps } from './Player'
@@ -141,6 +142,11 @@ export default class Game {
 
 
 export class GameIA extends Game{
+  IA: AI;
+  constructor(host :PlayerProps, Ia :AI) {
+    super(host)
+    this.IA = Ia
+  }
 
   play(data: moveData) {
     const { uuid, position } = data
@@ -148,8 +154,6 @@ export class GameIA extends Game{
     const type = this.host.uuid == player?.uuid ? 'host' : 'challenger';
     if (player) {
       if (this.isOver) return player.error("You can't play, the game is over !")
-      if (!this.challenger) return player.error('The game has not started yet!')
-
       const activePlayer = this.whoPlays()
       if (activePlayer?.uuid == uuid) {
         this.grid.updateCase(position, uuid)
@@ -158,6 +162,11 @@ export class GameIA extends Game{
             !this.isGameOver() && this.nextPlayer();
           })
           .catch(() => player.error('This case is not empty.'))
+        this.grid.updateCase(this.IA.play(this.grid), this.IA.uuid)
+          .then(() => {
+            this.host.update(position, type);
+            !this.isGameOver() && this.nextPlayer();
+          })
         return 
       }
       return player.error('Your opponent has not played yet!')

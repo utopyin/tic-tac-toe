@@ -2,6 +2,10 @@ import Game, { GameIA } from "./Game"
 import { PlayerProps, Options } from "./Player";
 import WSS from '../server'
 import { v4 as uuidV4 } from 'uuid';
+import AI from "../AIs/AI";
+import EasyAI from "../AIs/easy"
+import MediumAI from "../AIs/medium"
+import HardAI from "../AIs/hard"
 
 interface Indexes {
   [key: string]: string
@@ -17,6 +21,11 @@ export default class GameHandler {
     this.players = {}
     this.rooms = {}
   }
+
+  private chooseAI(num : 1|2|3) : AI {
+    const list = [EasyAI,MediumAI,HardAI]
+    return new list[num-1]()
+  }
   
   create(host: PlayerProps, options : Options | null = null): void {
     if (this.players[host.uuid] != undefined) {
@@ -29,7 +38,13 @@ export default class GameHandler {
       }))
     }
     const roomUuid = uuidV4();
-    this.rooms[roomUuid] = options?.ai ? new Game(host) : new GameIA(host, );
+
+    if (options?.ai != null) {
+      this.rooms[roomUuid] =new GameIA(host, this.chooseAI(options.ai))
+    } else {
+      this.rooms[roomUuid] = new Game(host)
+    }
+    
     this.players[host.uuid] = roomUuid;
     
     host.ws.send(JSON.stringify({
