@@ -6,7 +6,7 @@ import AI from './AI'
 export default class MediumAI extends AI{
     constructor() {
         super()
-        this.name = "I'm a human I swear"
+        this.name = "Mork Zeckurburg"
     }
     
     play(Board:Grid):Position {

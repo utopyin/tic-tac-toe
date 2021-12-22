@@ -1,5 +1,21 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GameIA = void 0;
 var Grid_1 = require("./Grid");
 var Player_1 = require("./Player");
 var Game = /** @class */ (function () {
@@ -137,4 +153,40 @@ var Game = /** @class */ (function () {
     return Game;
 }());
 exports.default = Game;
+var GameIA = /** @class */ (function (_super) {
+    __extends(GameIA, _super);
+    function GameIA(host, Ia) {
+        var _this = _super.call(this, host) || this;
+        _this.IA = Ia;
+        return _this;
+    }
+    GameIA.prototype.play = function (data) {
+        var _this = this;
+        var uuid = data.uuid, position = data.position;
+        var player = this.getPlayer(uuid);
+        var type = this.host.uuid == (player === null || player === void 0 ? void 0 : player.uuid) ? 'host' : 'challenger';
+        if (player) {
+            if (this.isOver)
+                return player.error("You can't play, the game is over !");
+            var activePlayer = this.whoPlays();
+            if ((activePlayer === null || activePlayer === void 0 ? void 0 : activePlayer.uuid) == uuid) {
+                this.grid.updateCase(position, uuid)
+                    .then(function () {
+                    _this.host.update(position, type);
+                    !_this.isGameOver() && _this.nextPlayer();
+                })
+                    .catch(function () { return player.error('This case is not empty.'); });
+                this.grid.updateCase(this.IA.play(this.grid), this.IA.uuid)
+                    .then(function () {
+                    _this.host.update(position, type);
+                    !_this.isGameOver() && _this.nextPlayer();
+                });
+                return;
+            }
+            return player.error('Your opponent has not played yet!');
+        }
+    };
+    return GameIA;
+}(Game));
+exports.GameIA = GameIA;
 //# sourceMappingURL=Game.js.map

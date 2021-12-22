@@ -15,19 +15,18 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EasyAI = void 0;
 var AI_1 = require("./AI");
 var EasyAI = /** @class */ (function (_super) {
     __extends(EasyAI, _super);
-    function EasyAI(uuid) {
-        var _this = _super.call(this, uuid) || this;
-        _this.uuid = uuid;
+    function EasyAI() {
+        var _this = _super.call(this) || this;
+        _this.name = "Gori Kosporav";
         return _this;
     }
     EasyAI.prototype.play = function (Board) {
         return this.getRandomCase(Board.tableau);
     };
     return EasyAI;
-}(AI_1.AI));
-exports.EasyAI = EasyAI;
+}(AI_1.default));
+exports.default = EasyAI;
 //# sourceMappingURL=hard.js.map

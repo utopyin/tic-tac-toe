@@ -13,7 +13,7 @@ export default class AI {
         this.name = "AlphaTicTacToe"
     }
 
-    play(Board:Grid):Position{
+    play(Board:Grid,turn:number):Position{
         return (0 as Position)
     }
 

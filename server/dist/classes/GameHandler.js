@@ -3,12 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Game_1 = require("./Game");
 var server_1 = require("../server");
 var uuid_1 = require("uuid");
+var easy_1 = require("../AIs/easy");
+var medium_1 = require("../AIs/medium");
+var hard_1 = require("../AIs/hard");
 var GameHandler = /** @class */ (function () {
     function GameHandler() {
         this.players = {};
         this.rooms = {};
     }
-    GameHandler.prototype.create = function (host) {
+    GameHandler.prototype.chooseAI = function (num) {
+        var list = [easy_1.default, medium_1.default, hard_1.default];
+        return new list[num - 1]();
+    };
+    GameHandler.prototype.create = function (host, options) {
+        if (options === void 0) { options = null; }
         if (this.players[host.uuid] != undefined) {
             host.ws.send(JSON.stringify({
                 op: 'error',
@@ -19,7 +27,12 @@ var GameHandler = /** @class */ (function () {
             }));
         }
         var roomUuid = (0, uuid_1.v4)();
-        this.rooms[roomUuid] = new Game_1.default(host);
+        if ((options === null || options === void 0 ? void 0 : options.ai) != null) {
+            this.rooms[roomUuid] = new Game_1.GameIA(host, this.chooseAI(options.ai));
+        }
+        else {
+            this.rooms[roomUuid] = new Game_1.default(host);
+        }
         this.players[host.uuid] = roomUuid;
         host.ws.send(JSON.stringify({
             op: 'host'

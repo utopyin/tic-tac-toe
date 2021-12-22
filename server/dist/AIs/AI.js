@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AI = void 0;
 var AI = /** @class */ (function () {
-    function AI(uuid) {
-        this.uuid = uuid;
+    function AI() {
+        this.uuid = "SomeAI";
         this.name = "AlphaTicTacToe";
     }
+    AI.prototype.play = function (Board) {
+        return 0;
+    };
     AI.prototype.getRandomCase = function (Board) {
         var caseu = Math.floor(Math.random() * 9);
         while (!Board[caseu].value) {
@@ -20,10 +22,30 @@ var AI = /** @class */ (function () {
         });
         return true;
     };
-    AI.prototype.calculatePscore = function (combinaison) {
-        return false;
+    AI.prototype.calculatePscore = function (combinaison, Board) {
+        var _this = this;
+        var prority = 0;
+        var placements = [];
+        combinaison.forEach(function (x) {
+            if (Board[x].value) {
+                if (Board[x].value == _this.uuid) {
+                    prority++;
+                }
+                else {
+                    prority--;
+                }
+            }
+            else {
+                placements.push(x);
+            }
+        });
+        var proposition = {
+            'priority': prority.toString(),
+            'placements': placements
+        };
+        return proposition.placements[0] == undefined && proposition.priority == "-1" ? null : proposition;
     };
     return AI;
 }());
-exports.AI = AI;
+exports.default = AI;
 //# sourceMappingURL=AI.js.map

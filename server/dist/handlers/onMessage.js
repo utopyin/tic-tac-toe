@@ -15,7 +15,7 @@ function onMessage(socket, payload) {
                     uuid: data.uuid,
                     name: data.name,
                     ws: socket,
-                });
+                }, data.options);
                 break;
             case 'play':
                 (_b = server_1.gameHandler.getGameByPlayer(data.uuid)) === null || _b === void 0 ? void 0 : _b.play(data);

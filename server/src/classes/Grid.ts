@@ -2,15 +2,32 @@ import Case, { Position, Symbol } from './Case';
 
 export default class Grid {
   tableau;
-  constructor() {
-    this.tableau = []
-    for (let k = 0; k < 9; k++) {
-      this.tableau.push(new Case(k))
+  constructor(tableau : Case[] | null = null) {
+    if (!tableau) {
+      this.tableau = []
+      for (let k = 0; k < 9; k++) {
+        this.tableau.push(new Case(k))
+      }
+    } else {
+      this.tableau = tableau
     }
   }
 
   isCaseEmpty(pos: Position) {
     return this.tableau[pos].value == null
+  }
+
+  duplicate():Grid {
+    const tableau = this.tableau
+    return new Grid(tableau)
+  }
+
+  casesVides():Position[] {
+    let vides:Position[] = []
+    for (let k =0; k<9;k++) {
+      if (this.tableau[k].value ==undefined) vides.push(k as Position)
+    }
+    return vides 
   }
 
   updateCase(pos: Position, uuid: string): Promise<void> {
