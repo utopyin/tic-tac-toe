@@ -37,6 +37,7 @@ interface IState {
   reset: () => void;
   updateNickname: () => void;
   resets: number;
+  isWinning: boolean;
 }
 
 const defaultClient = new Client();
@@ -67,7 +68,8 @@ const WSContext = createContext<IState>({
   cases: defaultCases,
   reset: () => {},
   updateNickname: () => {},
-  resets: 0
+  resets: 0,
+  isWinning: false
 })
 
 export default ({children}: Props) => {
@@ -80,6 +82,7 @@ export default ({children}: Props) => {
   const [cases, setCases] = useState<ICase[]>(defaultCases);
   const { addNoti } = useNoti();
   const [resets, setResets] = useState(0);
+  const [isWinning, setIsWinning] = useState(false);
 
   const reset = (isRematch: boolean = false) => {
     setCases(defaultCases);
@@ -167,13 +170,16 @@ export default ({children}: Props) => {
           setGameState(defaultGameState);
           break;
         case 'join':
+          setCases(defaultCases);
           setGameState({...defaultGameState, ...{opponent: data.opponent}});
           setRole((old) => old != 'host' ? 'challenger' : old);
           break;
         case 'win':
+          setIsWinning(true);
           end(data.forfeit);
           break;
         case 'lose':
+          setIsWinning(false);
           end(data.forfeit);
           break;
         case 'error':
@@ -206,7 +212,8 @@ export default ({children}: Props) => {
     cases,
     reset,
     updateNickname,
-    resets
+    resets,
+    isWinning
   }
 
   return (

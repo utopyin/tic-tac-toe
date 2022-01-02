@@ -80,9 +80,7 @@ var GameHandler = /** @class */ (function () {
             var game = this.getGame(roomUUID);
             if (game) {
                 var needDestroy = game.leave(uuid);
-                if (needDestroy) {
-                    delete this.rooms[roomUUID];
-                }
+                needDestroy ? delete this.rooms[roomUUID] : game.reset();
             }
         }
         delete this.players[uuid];

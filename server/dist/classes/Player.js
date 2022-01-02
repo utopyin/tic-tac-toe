@@ -54,7 +54,7 @@ var Player = /** @class */ (function () {
             }
         }));
     };
-    Player.prototype.reset = function () {
+    Player.prototype.rematch = function () {
         this.ws.send(JSON.stringify({
             op: 'rematch'
         }));

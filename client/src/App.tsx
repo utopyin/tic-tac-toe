@@ -1,12 +1,11 @@
 import { useWS } from './modules/ws/ws';
-import { useNoti } from './modules/notifications/noti';
 import Board from './modules/ui/Board';
 import Rooms from './modules/ui/Rooms';
 import header from './style/header.module.scss';
 import './style/index.scss';
 import CheckIcon from '@mui/icons-material/Check';
 import HostOrLeave from './modules/ui/Controller';
-import { useEffect, useState } from 'react';
+import IATraining from './modules/ui/AITraining'
 
 function App() {
   const { role, client, updateNickname } = useWS();
@@ -23,7 +22,10 @@ function App() {
             placeholder={client.name ? `Playing as ${client.name}` : 'nickname'}></input>
           <div onClick={updateNickname}><CheckIcon /></div>
         </div>
-        <HostOrLeave />
+        <div className={header.Right}>
+          { !role && <IATraining /> }
+          <HostOrLeave />
+        </div>
       </div>
       { role ? <Board /> : <Rooms /> }
     </div>

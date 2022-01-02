@@ -75,6 +75,21 @@ export default class Client {
     }
   }
 
+  train(difficulty: number) {
+    if (this.uuid) {
+      this.conn?.send(JSON.stringify({
+        op: 'host',
+        data: {
+          uuid: this.uuid,
+          name: this.name
+        },
+        options: {
+          ai: difficulty
+        }
+      }));
+    }
+  }
+
   rematch() {
     this.conn?.send(JSON.stringify({
       op: 'rematch',

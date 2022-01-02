@@ -69,7 +69,7 @@ export default class Player {
     }))
   }
 
-  reset() {
+  rematch() {
     this.ws.send(JSON.stringify({
       op: 'rematch'
     }))
