@@ -1,23 +1,26 @@
 import Case, { Position } from "../classes/case";
+import Player from '../classes/Player';
+import { v4 } from 'uuid'
 export interface proposition {
     priority : "-2" | "1" | "2";
     placements : Position[] ;
 }
 
 
-export default class AI {
-    uuid;name: string| null;playeruuid;
-    constructor(playeruuid:string) {
-        this.uuid = "SomeAI"
+export default class AI extends Player {
+    uuid; playeruuid;
+    constructor(playerUUID: string) {
+        const uuid = v4();
+        super({uuid: uuid, name: "AlphaTicTacToe", ws: null});
+        this.uuid = uuid
         this.name = "AlphaTicTacToe"
-        this.playeruuid = playeruuid
+        this.playeruuid = playerUUID
     }
-
 
     getRandomCase(Board:Array<Case>):Position{
         let caseu = Math.floor(Math.random()*9);
         while (Board[caseu].value) {
-            caseu =Math.floor(Math.random()*8)
+            caseu = Math.floor(Math.random()*8)
         }
         return (caseu as Position)
     }

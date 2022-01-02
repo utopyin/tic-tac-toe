@@ -4,7 +4,7 @@ import { Position } from './case';
 export interface PlayerProps {
   uuid: string;
   name: string;
-  ws: WebSocket;
+  ws: WebSocket | null;
 }
 
 export interface Options {
@@ -21,7 +21,7 @@ export default class Player {
   }
 
   update(position: Position, state: 'challenger' | 'host') {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'update',
       data: {
         position,
@@ -31,7 +31,7 @@ export default class Player {
   }
 
   error(message: string, title?: string) {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'error',
       data: {
         title,
@@ -41,7 +41,7 @@ export default class Player {
   }
 
   win(turn: number, forfeit: boolean = false) {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'win',
       data: {
         turn,
@@ -51,7 +51,7 @@ export default class Player {
   }
 
   lose(turn: number, forfeit: boolean = false) {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'lose',
       data: {
         turn,
@@ -61,7 +61,7 @@ export default class Player {
   }
 
   leave(uuid: string) {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'leave',
       data: {
         who: uuid == this.uuid ? 'you' : 'them'
@@ -70,7 +70,7 @@ export default class Player {
   }
 
   rematch() {
-    this.ws.send(JSON.stringify({
+    this.ws?.send(JSON.stringify({
       op: 'rematch'
     }))
   }

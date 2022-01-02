@@ -16,6 +16,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameIA = void 0;
+var easy_1 = require("../AIs/easy");
+var hard_1 = require("../AIs/hard");
+var medium_1 = require("../AIs/medium");
 var Grid_1 = require("./Grid");
 var Player_1 = require("./Player");
 var Game = /** @class */ (function () {
@@ -34,13 +37,14 @@ var Game = /** @class */ (function () {
     Game.prototype.join = function (challenger) {
         var _this = this;
         return new Promise(function (resolve, reject) {
+            var _a, _b;
             if (_this.challenger)
                 return reject('The game is full.');
             if (challenger.uuid == _this.host.uuid)
                 return reject('You can not join a game you host.');
             _this.challenger = new Player_1.default(challenger);
             _this.isOver = false;
-            _this.host.ws.send(JSON.stringify({
+            (_a = _this.host.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
                 op: 'join',
                 data: {
                     opponent: {
@@ -48,7 +52,7 @@ var Game = /** @class */ (function () {
                     }
                 }
             }));
-            challenger.ws.send(JSON.stringify({
+            (_b = challenger.ws) === null || _b === void 0 ? void 0 : _b.send(JSON.stringify({
                 op: 'join',
                 data: {
                     opponent: {
@@ -149,6 +153,14 @@ var Game = /** @class */ (function () {
         }
     };
     Game.prototype.rematch = function (uuid) {
+        if (this instanceof GameIA) {
+            this.reset(true);
+            if (this.whoPlays() instanceof easy_1.default ||
+                this.whoPlays() instanceof medium_1.default ||
+                this.whoPlays() instanceof hard_1.default)
+                this.playIA();
+            return;
+        }
         if (this.isRematch && this.rematcher != uuid)
             return this.reset(true);
         this.rematcher = uuid;
@@ -159,14 +171,15 @@ var Game = /** @class */ (function () {
 exports.default = Game;
 var GameIA = /** @class */ (function (_super) {
     __extends(GameIA, _super);
-    function GameIA(host, Ia) {
+    function GameIA(host, IA) {
+        var _a;
         var _this = _super.call(this, host) || this;
-        _this.IA = Ia;
-        _this.host.ws.send(JSON.stringify({
+        _this.challenger = IA;
+        (_a = _this.host.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'join',
             data: {
                 opponent: {
-                    name: _this.IA.name
+                    name: IA.name
                 }
             }
         }));
@@ -174,9 +187,9 @@ var GameIA = /** @class */ (function (_super) {
     }
     GameIA.prototype.playIA = function () {
         var _this = this;
-        var posIA = this.IA.play(this.grid, this.turn);
+        var posIA = this.challenger.play(this.grid, this.turn);
         console.log("Case choisie par l'IA : " + posIA);
-        this.grid.updateCase(posIA, this.IA.uuid)
+        this.grid.updateCase(posIA, this.challenger.uuid)
             .then(function () {
             _this.host.update(posIA, 'challenger');
             !_this.isGameOver() && _this.nextPlayer();

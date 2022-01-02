@@ -9,7 +9,8 @@ var Player = /** @class */ (function () {
         // const symbols: Symbol[] = ["O", "\u262b"];
     }
     Player.prototype.update = function (position, state) {
-        this.ws.send(JSON.stringify({
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'update',
             data: {
                 position: position,
@@ -18,7 +19,8 @@ var Player = /** @class */ (function () {
         }));
     };
     Player.prototype.error = function (message, title) {
-        this.ws.send(JSON.stringify({
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'error',
             data: {
                 title: title,
@@ -27,8 +29,9 @@ var Player = /** @class */ (function () {
         }));
     };
     Player.prototype.win = function (turn, forfeit) {
+        var _a;
         if (forfeit === void 0) { forfeit = false; }
-        this.ws.send(JSON.stringify({
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'win',
             data: {
                 turn: turn,
@@ -37,8 +40,9 @@ var Player = /** @class */ (function () {
         }));
     };
     Player.prototype.lose = function (turn, forfeit) {
+        var _a;
         if (forfeit === void 0) { forfeit = false; }
-        this.ws.send(JSON.stringify({
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'lose',
             data: {
                 turn: turn,
@@ -47,7 +51,8 @@ var Player = /** @class */ (function () {
         }));
     };
     Player.prototype.leave = function (uuid) {
-        this.ws.send(JSON.stringify({
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'leave',
             data: {
                 who: uuid == this.uuid ? 'you' : 'them'
@@ -55,7 +60,8 @@ var Player = /** @class */ (function () {
         }));
     };
     Player.prototype.rematch = function () {
-        this.ws.send(JSON.stringify({
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
             op: 'rematch'
         }));
     };

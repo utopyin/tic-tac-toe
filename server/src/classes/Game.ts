@@ -1,3 +1,4 @@
+import AI from '../AIs/AI';
 import EasyAI from '../AIs/easy';
 import HardAI from '../AIs/hard';
 import MediumAI from '../AIs/medium';
@@ -27,7 +28,7 @@ export default class Game {
 
       this.isOver = false;
 
-      this.host.ws.send(JSON.stringify({
+      this.host.ws?.send(JSON.stringify({
         op: 'join',
         data: {
           opponent: {
@@ -35,7 +36,8 @@ export default class Game {
           }
         }
       }))
-      challenger.ws.send(JSON.stringify({
+
+      challenger.ws?.send(JSON.stringify({
         op: 'join',
         data: {
           opponent: {
@@ -46,7 +48,6 @@ export default class Game {
 
       resolve()
     })
-    
   }
 
   whoPlays() {
@@ -140,6 +141,15 @@ export default class Game {
   }
 
   rematch(uuid: string) {
+    if (this instanceof GameIA) {
+      this.reset(true);
+      if (
+        this.whoPlays() instanceof EasyAI ||
+        this.whoPlays() instanceof MediumAI ||
+        this.whoPlays() instanceof HardAI
+      ) this.playIA();
+      return
+    }
     if (this.isRematch && this.rematcher != uuid) return this.reset(true);
     this.rematcher = uuid;
     this.isRematch = true;
@@ -147,31 +157,30 @@ export default class Game {
   
 }
 
-
-export class GameIA extends Game{
-  IA: EasyAI | MediumAI | HardAI;
-  constructor(host: PlayerProps, Ia: EasyAI | MediumAI | HardAI) {
+export class GameIA extends Game {
+  challenger: EasyAI | MediumAI | HardAI;
+  constructor(host: PlayerProps, IA: EasyAI | MediumAI | HardAI) {
     super(host)
-    this.IA = Ia
-    this.host.ws.send(JSON.stringify({
+    this.challenger = IA
+    this.host.ws?.send(JSON.stringify({
       op: 'join',
       data: {
         opponent: {
-          name: this.IA.name
+          name: IA.name
         }
       }
     }))
   }
 
   playIA() {
-    const posIA = this.IA.play(this.grid,this.turn)
-        console.log("Case choisie par l'IA : "+ posIA)
-        this.grid.updateCase(posIA, this.IA.uuid)
-          .then(() => {
-            this.host.update(posIA, 'challenger');
-            !this.isGameOver() && this.nextPlayer();
-          })
-          .catch((e) => console.log("ErrorIA : " + e))
+    const posIA = this.challenger.play(this.grid,this.turn)
+      console.log("Case choisie par l'IA : "+ posIA)
+      this.grid.updateCase(posIA, this.challenger.uuid)
+        .then(() => {
+          this.host.update(posIA, 'challenger');
+          !this.isGameOver() && this.nextPlayer();
+        })
+        .catch((e) => console.log("ErrorIA : " + e))
   }
 
   play(data: moveData) {

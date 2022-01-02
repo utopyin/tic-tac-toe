@@ -16,9 +16,10 @@ var GameHandler = /** @class */ (function () {
         return new list[num - 1](playeruuid);
     };
     GameHandler.prototype.create = function (host, options) {
+        var _a, _b;
         if (options === void 0) { options = null; }
         if (this.players[host.uuid] != undefined) {
-            host.ws.send(JSON.stringify({
+            (_a = host.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
                 op: 'error',
                 data: {
                     title: "You can't host a game",
@@ -27,7 +28,9 @@ var GameHandler = /** @class */ (function () {
             }));
         }
         var roomUuid = (0, uuid_1.v4)();
-        console.log(options);
+        (_b = host.ws) === null || _b === void 0 ? void 0 : _b.send(JSON.stringify({
+            op: 'host'
+        }));
         if ((options === null || options === void 0 ? void 0 : options.ai) != undefined) {
             this.rooms[roomUuid] = new Game_1.GameIA(host, this.chooseAI(options.ai, host.uuid));
         }
@@ -36,15 +39,13 @@ var GameHandler = /** @class */ (function () {
             this.sendRooms();
         }
         this.players[host.uuid] = roomUuid;
-        host.ws.send(JSON.stringify({
-            op: 'host'
-        }));
     };
     GameHandler.prototype.join = function (roomUUID, challenger) {
         var _this = this;
+        var _a;
         var game = this.getGame(roomUUID);
         if (!game || game instanceof Game_1.GameIA) {
-            return challenger.ws.send(JSON.stringify({
+            return (_a = challenger.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
                 op: 'error',
                 data: {
                     title: "You can't join this game",
@@ -55,7 +56,8 @@ var GameHandler = /** @class */ (function () {
         game.join(challenger).then(function () {
             _this.players[challenger.uuid] = roomUUID;
         }).catch(function (message) {
-            challenger.ws.send(JSON.stringify({
+            var _a;
+            (_a = challenger.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
                 op: 'error',
                 data: {
                     title: "You can't join this room",

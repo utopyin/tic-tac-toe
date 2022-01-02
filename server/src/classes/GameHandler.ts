@@ -29,7 +29,7 @@ export default class GameHandler {
   
   create(host: PlayerProps, options : Options | null = null): void {
     if (this.players[host.uuid] != undefined) {
-      host.ws.send(JSON.stringify({
+      host.ws?.send(JSON.stringify({
         op: 'error',
         data: {
           title: "You can't host a game",
@@ -37,9 +37,12 @@ export default class GameHandler {
         }
       }))
     }
+
     const roomUuid = uuidV4();
 
-    console.log(options)
+    host.ws?.send(JSON.stringify({
+      op: 'host'
+    }));
 
     if (options?.ai != undefined) {
       this.rooms[roomUuid] = new GameIA(host, this.chooseAI(options.ai, host.uuid))
@@ -49,15 +52,12 @@ export default class GameHandler {
     }
 
     this.players[host.uuid] = roomUuid;
-    host.ws.send(JSON.stringify({
-      op: 'host'
-    }));
   }
 
   join(roomUUID: string, challenger: PlayerProps) {
     const game = this.getGame(roomUUID);
     if (!game || game instanceof GameIA) {
-      return challenger.ws.send(JSON.stringify({
+      return challenger.ws?.send(JSON.stringify({
         op: 'error',
         data: {
           title: "You can't join this game",
@@ -69,7 +69,7 @@ export default class GameHandler {
     game.join(challenger).then(() => {
       this.players[challenger.uuid] = roomUUID
     }).catch(message => {
-      challenger.ws.send(JSON.stringify({
+      challenger.ws?.send(JSON.stringify({
         op: 'error',
         data: {
           title: "You can't join this room",
