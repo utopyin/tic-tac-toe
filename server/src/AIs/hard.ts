@@ -28,16 +28,13 @@ export default class HardAI extends AI{
     }
 
     minimax(Board:Grid,depth:number,maximizingPlayer:boolean,alpha:number,beta:number,placement:Position|null=null):minimax{
-        console.log("minimax : " + depth + maximizingPlayer+ placement)
         
         const casesVides = Board.casesVides()
 
         if (depth<=4 && placement) {
             if (Board.isGameOver()) {
-                console.log("Somebody won, branch is over")
                 return {'position':placement,'value': (+maximizingPlayer * -2) +1 }
             } else if (depth==0) {
-                console.log("No more space, branch is over")
                 return {'position':placement,'value':0}
             }
         }
@@ -54,7 +51,6 @@ export default class HardAI extends AI{
                 maxEval = this.customMax(evalu,maxEval)
                 alpha = Math.max(alpha, evalu.value)
                 if (beta <= alpha) {
-                    console.log("pruning")
                     break;
                 }
             };

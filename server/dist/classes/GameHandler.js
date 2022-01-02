@@ -43,7 +43,7 @@ var GameHandler = /** @class */ (function () {
     GameHandler.prototype.join = function (roomUUID, challenger) {
         var _this = this;
         var game = this.getGame(roomUUID);
-        if (!game) {
+        if (!game || game instanceof Game_1.GameIA) {
             return challenger.ws.send(JSON.stringify({
                 op: 'error',
                 data: {
@@ -88,7 +88,9 @@ var GameHandler = /** @class */ (function () {
         this.sendRooms();
     };
     GameHandler.prototype.getRooms = function () {
-        return Object.entries(this.rooms).map(function (_a) {
+        return Object.entries(this.rooms)
+            .filter(function (x) { return !(x[1] instanceof Game_1.GameIA); })
+            .map(function (_a) {
             var roomUUID = _a[0], game = _a[1];
             return {
                 uuid: roomUUID,
