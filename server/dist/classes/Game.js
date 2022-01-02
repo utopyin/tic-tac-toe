@@ -39,6 +39,7 @@ var Game = /** @class */ (function () {
             if (challenger.uuid == _this.host.uuid)
                 return reject('You can not join a game you host.');
             _this.challenger = new Player_1.default(challenger);
+            _this.isOver = false;
             _this.host.ws.send(JSON.stringify({
                 op: 'join',
                 data: {
@@ -133,7 +134,7 @@ var Game = /** @class */ (function () {
         }
         return false; // the game isn't destroyed
     };
-    Game.prototype.reset = function () {
+    Game.prototype.reset = function (isRematch) {
         var _a;
         this.index = 0;
         this.turn = 0;
@@ -142,12 +143,14 @@ var Game = /** @class */ (function () {
         this.isRematch = false;
         this.rematcher = '';
         this.resets += 1;
-        this.host.reset();
-        (_a = this.challenger) === null || _a === void 0 ? void 0 : _a.reset();
+        if (isRematch) {
+            this.host.rematch();
+            (_a = this.challenger) === null || _a === void 0 ? void 0 : _a.rematch();
+        }
     };
     Game.prototype.rematch = function (uuid) {
         if (this.isRematch && this.rematcher != uuid)
-            return this.reset();
+            return this.reset(true);
         this.rematcher = uuid;
         this.isRematch = true;
     };

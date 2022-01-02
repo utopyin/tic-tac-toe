@@ -3,10 +3,7 @@ import style from '../../style/board.module.scss'
 import Case from './Case'
 
 export default () => {
-  const { gameState, cases, role, client, resets } = useWS();
-
-  const winner = (gameState.turn + resets) % 2 == 1 ? 'host' : 'challenger';
-  const isWinning = role == winner;
+  const { gameState, cases, role, client, resets, isWinning } = useWS();
 
   return (
     <div className={style.Board}>

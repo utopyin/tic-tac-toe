@@ -25,6 +25,8 @@ export default class Game {
       if (challenger.uuid == this.host.uuid) return reject('You can not join a game you host.');
       this.challenger = new Player(challenger);
 
+      this.isOver = false;
+
       this.host.ws.send(JSON.stringify({
         op: 'join',
         data: {
@@ -123,7 +125,7 @@ export default class Game {
     return false // the game isn't destroyed
   }
 
-  reset() {
+  reset(isRematch?: boolean) {
     this.index = 0;
     this.turn = 0;
     this.grid = new Grid();
@@ -131,12 +133,14 @@ export default class Game {
     this.isRematch = false;
     this.rematcher = '';
     this.resets += 1;
-    this.host.reset();
-    this.challenger?.reset();
+    if (isRematch) {
+      this.host.rematch();
+      this.challenger?.rematch();
+    }
   }
 
   rematch(uuid: string) {
-    if (this.isRematch && this.rematcher != uuid) return this.reset();
+    if (this.isRematch && this.rematcher != uuid) return this.reset(true);
     this.rematcher = uuid;
     this.isRematch = true;
   }

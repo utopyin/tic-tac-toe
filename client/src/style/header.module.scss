@@ -3,9 +3,8 @@
   width: 100%;
   margin-bottom: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  position: relative;
   
   .Input {
     display: flex;
@@ -45,34 +44,118 @@
     }
   }
 
-  .Controller {
-    width: 40px;
-    cursor: pointer;
-    padding: 0 5px;
+  .Right {
     height: 100%;
-    position: absolute;
-    background: var(--green);
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    right: 0;
-    transition: all ease 0.2s;
 
-    svg {
-      fill: black;
-    }
+    .AI {
+      width: 40px;
+      cursor: pointer;
+      padding: 0 5px;
+      height: 100%;
+      background: var(--dark-grey);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all ease 0.2s;
+      position: relative;
+      margin-right: 10px;
 
-    &:hover {
-      background: var(--light-green);
-    }
-
-    &.leave {
-      background: var(--red);
-
+      svg {
+        fill: var(--grey);
+      }
+  
       &:hover {
-        background: var(--light-red);
+
+        background: var(--darkish);
+
+        .Menu {
+          display: flex;
+        }
+      }
+
+      .Menu {
+        display: none;
+        animation: opa 0.2s ease-out;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: min-content;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: var(--dark-grey);
+
+        span {
+          color: var(--grey);
+          padding: 10px 12px;
+          width: 100%;
+          animation: slide-up 0.3s ease-out;
+          cursor: pointer;
+          background: var(--darkish);
+          transition: all ease 0.3s;
+          white-space: nowrap;
+          
+          &:hover {
+            filter: brightness(150%);
+          }
+        }
       }
     }
+
+    .Controller {
+      width: 40px;
+      cursor: pointer;
+      padding: 0 5px;
+      height: 100%;
+      background: var(--green);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all ease 0.2s;
+  
+      svg {
+        fill: black;
+      }
+  
+      &:hover {
+        background: var(--light-green);
+      }
+  
+      &.leave {
+        background: var(--red);
+  
+        &:hover {
+          background: var(--light-red);
+        }
+      }
+    }
+  }
+  
+}
+
+@keyframes opa {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(-10%)
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0%)
   }
 }

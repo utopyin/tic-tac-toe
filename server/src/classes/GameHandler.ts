@@ -99,10 +99,8 @@ export default class GameHandler {
     if (roomUUID) {
       const game = this.getGame(roomUUID);
       if (game) {
-        let needDestroy = game.leave(uuid)
-        if (needDestroy) {
-          delete this.rooms[roomUUID]
-        }
+        let needDestroy = game.leave(uuid);
+        needDestroy ? delete this.rooms[roomUUID] : game.reset();
       }
     }
     delete this.players[uuid]
