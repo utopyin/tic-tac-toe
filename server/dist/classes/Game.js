@@ -162,6 +162,14 @@ var GameIA = /** @class */ (function (_super) {
     function GameIA(host, Ia) {
         var _this = _super.call(this, host) || this;
         _this.IA = Ia;
+        _this.host.ws.send(JSON.stringify({
+            op: 'join',
+            data: {
+                opponent: {
+                    name: _this.IA.name
+                }
+            }
+        }));
         return _this;
     }
     GameIA.prototype.playIA = function () {

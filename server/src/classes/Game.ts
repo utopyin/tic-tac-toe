@@ -153,6 +153,14 @@ export class GameIA extends Game{
   constructor(host: PlayerProps, Ia: EasyAI | MediumAI | HardAI) {
     super(host)
     this.IA = Ia
+    this.host.ws.send(JSON.stringify({
+      op: 'join',
+      data: {
+        opponent: {
+          name: this.IA.name
+        }
+      }
+    }))
   }
 
   playIA() {
