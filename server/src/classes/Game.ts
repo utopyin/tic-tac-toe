@@ -1,4 +1,3 @@
-import AI from '../AIs/AI';
 import EasyAI from '../AIs/easy';
 import HardAI from '../AIs/hard';
 import MediumAI from '../AIs/medium';

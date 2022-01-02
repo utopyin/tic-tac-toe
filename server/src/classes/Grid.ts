@@ -18,7 +18,10 @@ export default class Grid {
   }
 
   duplicate():Grid {
-    const tableau = [...this.tableau]
+    let tableau = [] as Case[]
+    this.tableau.forEach( caseActu => {
+      tableau.push(new Case(caseActu.position, caseActu.value))
+    })
     return new Grid(tableau)
   }
 

@@ -31,7 +31,6 @@ export default class HardAI extends AI{
         console.log("minimax : " + depth + maximizingPlayer+ placement)
         
         const casesVides = Board.casesVides()
-        console.log(Board)
 
         if (depth<=4 && placement) {
             if (Board.isGameOver()) {

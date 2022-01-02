@@ -1,13 +1,4 @@
 "use strict";
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Case_1 = require("./Case");
 var Grid = /** @class */ (function () {
@@ -27,7 +18,10 @@ var Grid = /** @class */ (function () {
         return this.tableau[pos].value == null;
     };
     Grid.prototype.duplicate = function () {
-        var tableau = __spreadArray([], this.tableau, true);
+        var tableau = [];
+        this.tableau.forEach(function (caseActu) {
+            tableau.push(new Case_1.default(caseActu.position, caseActu.value));
+        });
         return new Grid(tableau);
     };
     Grid.prototype.casesVides = function () {

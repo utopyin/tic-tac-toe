@@ -38,7 +38,6 @@ var HardAI = /** @class */ (function (_super) {
         if (placement === void 0) { placement = null; }
         console.log("minimax : " + depth + maximizingPlayer + placement);
         var casesVides = Board.casesVides();
-        console.log(Board);
         if (depth <= 4 && placement) {
             if (Board.isGameOver()) {
                 console.log("Somebody won, branch is over");
