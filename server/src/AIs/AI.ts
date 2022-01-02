@@ -1,5 +1,4 @@
 import Case, { Position } from "../classes/case";
-import Grid from "../classes/Grid";
 export interface proposition {
     priority : "-2" | "1" | "2";
     placements : Position[] ;
@@ -7,19 +6,17 @@ export interface proposition {
 
 
 export default class AI {
-    uuid;name: string| null
-    constructor() {
+    uuid;name: string| null;playeruuid;
+    constructor(playeruuid:string) {
         this.uuid = "SomeAI"
         this.name = "AlphaTicTacToe"
+        this.playeruuid = playeruuid
     }
 
-    play(Board:Grid,turn:number):Position{
-        return (0 as Position)
-    }
 
     getRandomCase(Board:Array<Case>):Position{
         let caseu = Math.floor(Math.random()*9);
-        while (!Board[caseu].value) {
+        while (Board[caseu].value) {
             caseu =Math.floor(Math.random()*8)
         }
         return (caseu as Position)

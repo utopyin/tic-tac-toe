@@ -18,8 +18,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AI_1 = require("./AI");
 var MediumAI = /** @class */ (function (_super) {
     __extends(MediumAI, _super);
-    function MediumAI() {
-        var _this = _super.call(this) || this;
+    function MediumAI(playeruuid) {
+        var _this = _super.call(this, playeruuid) || this;
         _this.name = "Mork Zeckurburg";
         return _this;
     }

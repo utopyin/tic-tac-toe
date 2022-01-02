@@ -67,6 +67,7 @@ var Game = /** @class */ (function () {
     Game.prototype.nextPlayer = function () {
         this.index = (this.index + 1) % 2;
         this.turn++;
+        return true;
     };
     Game.prototype.play = function (data) {
         var _this = this;
@@ -160,6 +161,17 @@ var GameIA = /** @class */ (function (_super) {
         _this.IA = Ia;
         return _this;
     }
+    GameIA.prototype.playIA = function () {
+        var _this = this;
+        var posIA = this.IA.play(this.grid, this.turn);
+        console.log("Case choisie par l'IA : " + posIA);
+        this.grid.updateCase(posIA, this.IA.uuid)
+            .then(function () {
+            _this.host.update(posIA, 'challenger');
+            !_this.isGameOver() && _this.nextPlayer();
+        })
+            .catch(function (e) { return console.log("ErrorIA : " + e); });
+    };
     GameIA.prototype.play = function (data) {
         var _this = this;
         var uuid = data.uuid, position = data.position;
@@ -173,14 +185,9 @@ var GameIA = /** @class */ (function (_super) {
                 this.grid.updateCase(position, uuid)
                     .then(function () {
                     _this.host.update(position, type);
-                    !_this.isGameOver() && _this.nextPlayer();
+                    !_this.isGameOver() && _this.nextPlayer() && _this.playIA();
                 })
                     .catch(function () { return player.error('This case is not empty.'); });
-                this.grid.updateCase(this.IA.play(this.grid), this.IA.uuid)
-                    .then(function () {
-                    _this.host.update(position, type);
-                    !_this.isGameOver() && _this.nextPlayer();
-                });
                 return;
             }
             return player.error('Your opponent has not played yet!');

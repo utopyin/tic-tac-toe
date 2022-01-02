@@ -1,15 +1,42 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Case_1 = require("./Case");
 var Grid = /** @class */ (function () {
-    function Grid() {
-        this.tableau = [];
-        for (var k = 0; k < 9; k++) {
-            this.tableau.push(new Case_1.default(k));
+    function Grid(tableau) {
+        if (tableau === void 0) { tableau = null; }
+        if (!tableau) {
+            this.tableau = [];
+            for (var k = 0; k < 9; k++) {
+                this.tableau.push(new Case_1.default(k));
+            }
+        }
+        else {
+            this.tableau = tableau;
         }
     }
     Grid.prototype.isCaseEmpty = function (pos) {
         return this.tableau[pos].value == null;
+    };
+    Grid.prototype.duplicate = function () {
+        var tableau = __spreadArray([], this.tableau, true);
+        return new Grid(tableau);
+    };
+    Grid.prototype.casesVides = function () {
+        var vides = [];
+        for (var k = 0; k < 9; k++) {
+            if (this.tableau[k].value == undefined)
+                vides.push(k);
+        }
+        return vides;
     };
     Grid.prototype.updateCase = function (pos, uuid) {
         var _this = this;

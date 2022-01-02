@@ -18,8 +18,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AI_1 = require("./AI");
 var EasyAI = /** @class */ (function (_super) {
     __extends(EasyAI, _super);
-    function EasyAI() {
-        var _this = _super.call(this) || this;
+    function EasyAI(playeruuid) {
+        var _this = _super.call(this, playeruuid) || this;
         _this.name = "SuperEasyAI";
         return _this;
     }

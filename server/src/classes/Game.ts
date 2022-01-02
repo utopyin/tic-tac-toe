@@ -1,4 +1,7 @@
 import AI from '../AIs/AI';
+import EasyAI from '../AIs/easy';
+import HardAI from '../AIs/hard';
+import MediumAI from '../AIs/medium';
 import { moveData } from '../handlers/types';
 import Grid from './Grid'
 import Player, { PlayerProps } from './Player'
@@ -53,9 +56,10 @@ export default class Game {
     return (this.index + this.resets) % 2 == 0 ? this.challenger : this.host;
   }
 
-  nextPlayer() {
+  nextPlayer() :boolean {
     this.index = (this.index + 1) % 2
     this.turn++
+    return true
   }
 
   play(data: moveData) {
@@ -142,10 +146,21 @@ export default class Game {
 
 
 export class GameIA extends Game{
-  IA: AI;
-  constructor(host :PlayerProps, Ia :AI) {
+  IA: EasyAI | MediumAI | HardAI;
+  constructor(host :PlayerProps, Ia :EasyAI | MediumAI | HardAI) {
     super(host)
     this.IA = Ia
+  }
+
+  playIA() {
+    const posIA = this.IA.play(this.grid,this.turn)
+        console.log("Case choisie par l'IA : "+ posIA)
+        this.grid.updateCase(posIA, this.IA.uuid)
+          .then(() => {
+            this.host.update(posIA, 'challenger');
+            !this.isGameOver() && this.nextPlayer();
+          })
+          .catch((e) => console.log("ErrorIA : " + e))
   }
 
   play(data: moveData) {
@@ -159,14 +174,9 @@ export class GameIA extends Game{
         this.grid.updateCase(position, uuid)
           .then(() => {
             this.host.update(position, type);
-            !this.isGameOver() && this.nextPlayer();
+            !this.isGameOver() && this.nextPlayer() && this.playIA();
           })
           .catch(() => player.error('This case is not empty.'))
-        this.grid.updateCase(this.IA.play(this.grid), this.IA.uuid)
-          .then(() => {
-            this.host.update(position, type);
-            !this.isGameOver() && this.nextPlayer();
-          })
         return 
       }
       return player.error('Your opponent has not played yet!')

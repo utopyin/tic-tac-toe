@@ -22,9 +22,9 @@ export default class GameHandler {
     this.rooms = {}
   }
 
-  private chooseAI(num : 1|2|3) : AI {
+  private chooseAI(num : 1|2|3,playeruuid:string) : EasyAI | MediumAI | HardAI {
     const list = [EasyAI,MediumAI,HardAI]
-    return new list[num-1]()
+    return new list[num-1](playeruuid)
   }
   
   create(host: PlayerProps, options : Options | null = null): void {
@@ -40,7 +40,7 @@ export default class GameHandler {
     const roomUuid = uuidV4();
 
     if (options?.ai != null) {
-      this.rooms[roomUuid] =new GameIA(host, this.chooseAI(options.ai))
+      this.rooms[roomUuid] =new GameIA(host, this.chooseAI(options.ai, host.uuid))
     } else {
       this.rooms[roomUuid] = new Game(host)
     }
@@ -114,7 +114,7 @@ export default class GameHandler {
       return {
         uuid: roomUUID,
         name: game.host.name,
-        players: (game.host ? 1 : 0) + (game.challenger ? 1 : 0)
+        players: (game.host ? 1 : 0) + (game.challenger? 1 : 0)
       }
     });
   }

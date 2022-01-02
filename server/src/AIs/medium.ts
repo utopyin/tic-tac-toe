@@ -4,8 +4,8 @@ import AI from './AI'
 
 
 export default class MediumAI extends AI{
-    constructor() {
-        super()
+    constructor(playeruuid:string) {
+        super(playeruuid)
         this.name = "Mork Zeckurburg"
     }
     

@@ -11,9 +11,9 @@ var GameHandler = /** @class */ (function () {
         this.players = {};
         this.rooms = {};
     }
-    GameHandler.prototype.chooseAI = function (num) {
+    GameHandler.prototype.chooseAI = function (num, playeruuid) {
         var list = [easy_1.default, medium_1.default, hard_1.default];
-        return new list[num - 1]();
+        return new list[num - 1](playeruuid);
     };
     GameHandler.prototype.create = function (host, options) {
         if (options === void 0) { options = null; }
@@ -28,7 +28,7 @@ var GameHandler = /** @class */ (function () {
         }
         var roomUuid = (0, uuid_1.v4)();
         if ((options === null || options === void 0 ? void 0 : options.ai) != null) {
-            this.rooms[roomUuid] = new Game_1.GameIA(host, this.chooseAI(options.ai));
+            this.rooms[roomUuid] = new Game_1.GameIA(host, this.chooseAI(options.ai, host.uuid));
         }
         else {
             this.rooms[roomUuid] = new Game_1.default(host);

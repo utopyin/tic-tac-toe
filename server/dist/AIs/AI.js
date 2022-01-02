@@ -1,16 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AI = /** @class */ (function () {
-    function AI() {
+    function AI(playeruuid) {
         this.uuid = "SomeAI";
         this.name = "AlphaTicTacToe";
+        this.playeruuid = playeruuid;
     }
-    AI.prototype.play = function (Board) {
-        return 0;
-    };
     AI.prototype.getRandomCase = function (Board) {
         var caseu = Math.floor(Math.random() * 9);
-        while (!Board[caseu].value) {
+        while (Board[caseu].value) {
             caseu = Math.floor(Math.random() * 8);
         }
         return caseu;

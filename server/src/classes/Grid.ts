@@ -18,7 +18,7 @@ export default class Grid {
   }
 
   duplicate():Grid {
-    const tableau = this.tableau
+    const tableau = [...this.tableau]
     return new Grid(tableau)
   }
 
