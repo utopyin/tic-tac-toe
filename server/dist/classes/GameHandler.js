@@ -42,7 +42,7 @@ var GameHandler = /** @class */ (function () {
     GameHandler.prototype.join = function (roomUUID, challenger) {
         var _this = this;
         var game = this.getGame(roomUUID);
-        if (!game) {
+        if (!game || game instanceof Game_1.GameIA) {
             return challenger.ws.send(JSON.stringify({
                 op: 'error',
                 data: {
@@ -91,11 +91,12 @@ var GameHandler = /** @class */ (function () {
     GameHandler.prototype.getRooms = function () {
         return Object.entries(this.rooms).map(function (_a) {
             var roomUUID = _a[0], game = _a[1];
-            return {
-                uuid: roomUUID,
-                name: game.host.name,
-                players: (game.host ? 1 : 0) + (game.challenger ? 1 : 0)
-            };
+            if (!(game instanceof Game_1.GameIA))
+                return {
+                    uuid: roomUUID,
+                    name: game.host.name,
+                    players: (game.host ? 1 : 0) + (game.challenger ? 1 : 0)
+                };
         });
     };
     GameHandler.prototype.sendRooms = function () {

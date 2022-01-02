@@ -36,15 +36,12 @@ var HardAI = /** @class */ (function (_super) {
     };
     HardAI.prototype.minimax = function (Board, depth, maximizingPlayer, alpha, beta, placement) {
         if (placement === void 0) { placement = null; }
-        console.log("minimax : " + depth + maximizingPlayer + placement);
         var casesVides = Board.casesVides();
         if (depth <= 4 && placement) {
             if (Board.isGameOver()) {
-                console.log("Somebody won, branch is over");
                 return { 'position': placement, 'value': (+maximizingPlayer * -2) + 1 };
             }
             else if (depth == 0) {
-                console.log("No more space, branch is over");
                 return { 'position': placement, 'value': 0 };
             }
         }
@@ -58,7 +55,6 @@ var HardAI = /** @class */ (function (_super) {
                 maxEval = this.customMax(evalu, maxEval);
                 alpha = Math.max(alpha, evalu.value);
                 if (beta <= alpha) {
-                    console.log("pruning");
                     break;
                 }
             }

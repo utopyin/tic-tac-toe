@@ -56,7 +56,7 @@ export default class GameHandler {
 
   join(roomUUID: string, challenger: PlayerProps) {
     const game = this.getGame(roomUUID);
-    if (!game) {
+    if (!game || game instanceof GameIA) {
       return challenger.ws.send(JSON.stringify({
         op: 'error',
         data: {
@@ -111,7 +111,7 @@ export default class GameHandler {
 
   getRooms() {
     return Object.entries(this.rooms).map(([roomUUID, game]) => {
-      return {
+      if (!(game instanceof GameIA)) return {
         uuid: roomUUID,
         name: game.host.name,
         players: (game.host ? 1 : 0) + (game.challenger? 1 : 0)
