@@ -81,10 +81,10 @@ export default class Client {
         op: 'host',
         data: {
           uuid: this.uuid,
-          name: this.name
-        },
-        options: {
-          ai: difficulty
+          name: this.name,
+          options: {
+            ai: difficulty
+          }
         }
       }));
     }

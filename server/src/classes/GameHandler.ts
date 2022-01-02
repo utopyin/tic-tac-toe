@@ -23,7 +23,7 @@ export default class GameHandler {
   }
 
   private chooseAI(num : 1|2|3,playeruuid:string) : EasyAI | MediumAI | HardAI {
-    const list = [EasyAI,MediumAI,HardAI]
+    const list = [EasyAI, MediumAI, HardAI]
     return new list[num-1](playeruuid)
   }
   
@@ -39,19 +39,19 @@ export default class GameHandler {
     }
     const roomUuid = uuidV4();
 
-    if (options?.ai != null) {
-      this.rooms[roomUuid] =new GameIA(host, this.chooseAI(options.ai, host.uuid))
+    console.log(options)
+
+    if (options?.ai != undefined) {
+      this.rooms[roomUuid] = new GameIA(host, this.chooseAI(options.ai, host.uuid))
     } else {
       this.rooms[roomUuid] = new Game(host)
+      this.sendRooms();
     }
-    
+
     this.players[host.uuid] = roomUuid;
-    
     host.ws.send(JSON.stringify({
       op: 'host'
     }));
-    
-    this.sendRooms();
   }
 
   join(roomUUID: string, challenger: PlayerProps) {

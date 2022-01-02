@@ -27,17 +27,18 @@ var GameHandler = /** @class */ (function () {
             }));
         }
         var roomUuid = (0, uuid_1.v4)();
-        if ((options === null || options === void 0 ? void 0 : options.ai) != null) {
+        console.log(options);
+        if ((options === null || options === void 0 ? void 0 : options.ai) != undefined) {
             this.rooms[roomUuid] = new Game_1.GameIA(host, this.chooseAI(options.ai, host.uuid));
         }
         else {
             this.rooms[roomUuid] = new Game_1.default(host);
+            this.sendRooms();
         }
         this.players[host.uuid] = roomUuid;
         host.ws.send(JSON.stringify({
             op: 'host'
         }));
-        this.sendRooms();
     };
     GameHandler.prototype.join = function (roomUUID, challenger) {
         var _this = this;

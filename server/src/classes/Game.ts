@@ -150,7 +150,7 @@ export default class Game {
 
 export class GameIA extends Game{
   IA: EasyAI | MediumAI | HardAI;
-  constructor(host :PlayerProps, Ia :EasyAI | MediumAI | HardAI) {
+  constructor(host: PlayerProps, Ia: EasyAI | MediumAI | HardAI) {
     super(host)
     this.IA = Ia
   }
