@@ -2,7 +2,7 @@ import Case, { Position } from "../classes/case";
 import Player from '../classes/Player';
 import { v4 } from 'uuid'
 export interface proposition {
-    priority : "-2" | "1" | "2";
+    priority : "-2" | "1" | "2" | "0";
     placements : Position[] ;
 }
 
@@ -26,17 +26,19 @@ export default class AI extends Player {
     }
 
     isBoardEmpty(Board :Array<Case>):boolean {
-        Board.forEach(Case => {
-            if (Case.value) return false
-        });
+        for (let k = 0; k<9; k++) {
+            if (Board[k].value != null) {
+                return false
+            }
+        };
         return true
     }
 
-    calculatePscore(combinaison : Array<Position>, Board:Array<Case>) : proposition | null{
+    calculatePscore(combinaison: Array<Position>, Board:Array<Case>) : proposition | null{
         let prority = 0
         let placements = [] as Position[]
         combinaison.forEach(x => {
-            if (Board[x].value) {
+            if (Board[x].value != null) {
                 if (Board[x].value == this.uuid) {
                     prority ++
                 }else {
@@ -51,6 +53,7 @@ export default class AI extends Player {
             'priority' : prority.toString(),
             'placements' : placements as Position[]
         }
-        return proposition.placements[0] == undefined && proposition.priority == "-1"? null : (proposition as proposition) 
+        console.log(proposition)
+        return (proposition.placements[0] == undefined || proposition.priority == "-1") ? null : (proposition as proposition)
     }
 }
