@@ -8,6 +8,12 @@ var Player = /** @class */ (function () {
         this.name = name || 'Player';
         // const symbols: Symbol[] = ["O", "\u262b"];
     }
+    Player.prototype.draw = function () {
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
+            op: 'draw'
+        }));
+    };
     Player.prototype.update = function (position, state) {
         var _a;
         (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({

@@ -49,10 +49,10 @@ var Grid = /** @class */ (function () {
             if (this.tableau[combinaisons[k][2]].value &&
                 this.tableau[combinaisons[k][2]].value == this.tableau[combinaisons[k][1]].value &&
                 this.tableau[combinaisons[k][1]].value == this.tableau[combinaisons[k][0]].value) {
-                return true;
+                return { isOver: true, draw: false };
             }
         }
-        return false;
+        return { draw: this.casesVides().length == 0, isOver: this.casesVides().length == 0 };
     };
     Grid.prototype.toString = function () {
         var str = "";
