@@ -36,10 +36,12 @@ var AI = /** @class */ (function (_super) {
         return caseu;
     };
     AI.prototype.isBoardEmpty = function (Board) {
-        Board.forEach(function (Case) {
-            if (Case.value)
+        for (var k = 0; k < 9; k++) {
+            if (Board[k].value != null) {
                 return false;
-        });
+            }
+        }
+        ;
         return true;
     };
     AI.prototype.calculatePscore = function (combinaison, Board) {
@@ -47,7 +49,7 @@ var AI = /** @class */ (function (_super) {
         var prority = 0;
         var placements = [];
         combinaison.forEach(function (x) {
-            if (Board[x].value) {
+            if (Board[x].value != null) {
                 if (Board[x].value == _this.uuid) {
                     prority++;
                 }
@@ -63,7 +65,8 @@ var AI = /** @class */ (function (_super) {
             'priority': prority.toString(),
             'placements': placements
         };
-        return proposition.placements[0] == undefined && proposition.priority == "-1" ? null : proposition;
+        console.log(proposition);
+        return (proposition.placements[0] == undefined || proposition.priority == "-1") ? null : proposition;
     };
     return AI;
 }(Player_1.default));
