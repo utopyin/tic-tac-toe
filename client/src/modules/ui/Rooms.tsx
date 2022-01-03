@@ -7,9 +7,9 @@ export default () => {
 
   return (
     <div className={style.Rooms}>
-      {rooms.map(room => {
+      {rooms.map((room, index) => {
         return (
-          <div onClick={() => client.join(room.uuid)} key={room.name} className={style.Room}>
+          <div onClick={() => client.join(room.uuid)} key={room.name + `-${index}`} className={style.Room}>
             <span>{room.name}</span>
             <div>
               <span>{room.players}/2</span>
