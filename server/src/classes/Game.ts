@@ -58,10 +58,16 @@ export default class Game {
     return (this.index + this.resets) % 2 == 0 ? this.challenger : this.host;
   }
 
-  nextPlayer() :boolean {
+  nextPlayer(): boolean {
     this.index = (this.index + 1) % 2
     this.turn++
     return true
+  }
+
+  draw() {
+    this.isOver = true;
+    this.host?.draw();
+    this.challenger?.draw();
   }
 
   play(data: moveData) {
@@ -71,7 +77,6 @@ export default class Game {
     if (player) {
       if (this.isOver) return player.error("You can't play, the game is over !")
       if (!this.challenger) return player.error('The game has not started yet!')
-
       const activePlayer = this.whoPlays()
       if (activePlayer?.uuid == uuid) {
         this.grid.updateCase(position, uuid)
@@ -88,8 +93,12 @@ export default class Game {
   }
 
   isGameOver() {
-    if (this.turn < 4 || !this.grid.isGameOver()) return false
-    
+    const { draw, isOver } = this.grid.isGameOver();
+    if (this.turn < 4 || !isOver) return false
+    if (draw) {
+      this.draw();
+      return true
+    }
     this.isOver = true
     this.whoPlays()?.win(this.turn);
     this.whoWaits()?.lose(this.turn);

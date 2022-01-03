@@ -29,6 +29,18 @@
     }
   }
 
+  &.Disabled {
+    cursor: default;
+
+    &:hover {
+      background: var(--greyish);
+
+      &::after {
+        background: transparent;
+      }
+    }
+  }
+
   svg {
     z-index: 2;
     width: 35%;

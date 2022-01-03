@@ -134,6 +134,21 @@
         }
       }
     }
+
+    .Opponent {
+      display: flex;
+      margin-right: 10px;
+      align-items: center;
+      color: grey;
+      background: var(--dark-grey);
+      height: 40px;
+      padding: 0 15px;
+
+      svg {
+        fill: var(--red);
+        margin-right: 5px;
+      }
+    }
   }
   
 }

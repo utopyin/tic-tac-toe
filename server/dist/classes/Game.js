@@ -74,6 +74,12 @@ var Game = /** @class */ (function () {
         this.turn++;
         return true;
     };
+    Game.prototype.draw = function () {
+        var _a, _b;
+        this.isOver = true;
+        (_a = this.host) === null || _a === void 0 ? void 0 : _a.draw();
+        (_b = this.challenger) === null || _b === void 0 ? void 0 : _b.draw();
+    };
     Game.prototype.play = function (data) {
         var _this = this;
         var uuid = data.uuid, position = data.position;
@@ -101,8 +107,13 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.isGameOver = function () {
         var _a, _b;
-        if (this.turn < 4 || !this.grid.isGameOver())
+        var _c = this.grid.isGameOver(), draw = _c.draw, isOver = _c.isOver;
+        if (this.turn < 4 || !isOver)
             return false;
+        if (draw) {
+            this.draw();
+            return true;
+        }
         this.isOver = true;
         (_a = this.whoPlays()) === null || _a === void 0 ? void 0 : _a.win(this.turn);
         (_b = this.whoWaits()) === null || _b === void 0 ? void 0 : _b.lose(this.turn);

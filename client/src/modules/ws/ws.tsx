@@ -13,8 +13,9 @@ interface IGameState {
   isOver: boolean;
   forfeit: boolean;
   turn: number;
+  isDraw: boolean;
   opponent?: {
-    name: string
+    name: string;
   }
 }
 
@@ -45,7 +46,8 @@ const defaultGameState: IGameState = {
   turn: 0,
   forfeit: false,
   isOver: false,
-  opponent: undefined
+  opponent: undefined,
+  isDraw: false
 }
 const defaultCases: ICase[] = [
   { position: 0, state: '' },
@@ -117,7 +119,8 @@ export default ({children}: Props) => {
         opponent: forfeit ? undefined : old.opponent,
         isOver: true,
         forfeit: forfeit,
-        turn: old.turn
+        turn: old.turn,
+        isDraw: false
       }
     })
   }
@@ -192,6 +195,14 @@ export default ({children}: Props) => {
         case 'update':
           setCases(old => old.map(c => c.position == data.position ? data : c))
           setGameState(old => {return {...old, ...{turn: old.turn + 1}}})
+          break;
+        case 'draw':
+          setGameState(old => {
+            return {
+              ...old,
+              ...{ isOver: true, isDraw: true }
+            }
+          })
           break;
       }
     }

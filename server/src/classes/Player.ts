@@ -20,6 +20,12 @@ export default class Player {
     // const symbols: Symbol[] = ["O", "\u262b"];
   }
 
+  draw() {
+    this.ws?.send(JSON.stringify({
+      op: 'draw'
+    }))
+  }
+
   update(position: Position, state: 'challenger' | 'host') {
     this.ws?.send(JSON.stringify({
       op: 'update',

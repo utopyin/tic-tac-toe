@@ -6,9 +6,10 @@ import './style/index.scss';
 import CheckIcon from '@mui/icons-material/Check';
 import HostOrLeave from './modules/ui/Controller';
 import IATraining from './modules/ui/AITraining'
+import Opponent from './modules/ui/Opponent'
 
 function App() {
-  const { role, client, updateNickname } = useWS();
+  const { role, client, updateNickname, gameState } = useWS();
   
   return (
     <div className="app">
@@ -23,6 +24,7 @@ function App() {
           <div onClick={updateNickname}><CheckIcon /></div>
         </div>
         <div className={header.Right}>
+          { gameState.opponent && <Opponent /> }
           { !role && <IATraining /> }
           <HostOrLeave />
         </div>
