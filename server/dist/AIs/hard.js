@@ -43,11 +43,11 @@ var HardAI = /** @class */ (function (_super) {
     // customMin(a:minimax,b:minimax) {
     //     return a.value<b.value ? a : b 
     // }
-    HardAI.prototype.minimax = function (Board, depth, maximizingPlayer, alpha, beta, placement) {
-        if (placement === void 0) { placement = null; }
+    HardAI.prototype.minimax = function (Board, depth, maximizingPlayer, alpha, beta) {
         var casesVides = Board.casesVides();
-        if (depth <= 4 && placement) {
-            if (Board.isGameOver()) {
+        if (depth <= 4) {
+            var isOver = Board.isGameOver();
+            if (isOver.isOver && !isOver.draw) {
                 return (+maximizingPlayer * -2) + 1;
             }
             else if (depth == 0) {
@@ -60,12 +60,12 @@ var HardAI = /** @class */ (function (_super) {
                 var x = casesVides_1[_i];
                 var board = Board.duplicate();
                 board.updateCase(x, this.uuid);
-                var evalu = this.minimax(board, depth - 1, false, alpha, beta, x);
+                var evalu = this.minimax(board, depth - 1, false, alpha, beta);
                 maxEval = Math.max(evalu, maxEval);
-                // alpha = Math.max(alpha, evalu.value)
-                // if (beta <= alpha) {
-                //     break;
-                // }
+                alpha = Math.max(alpha, evalu);
+                if (beta <= alpha) {
+                    break;
+                }
             }
             ;
             return maxEval;
@@ -76,12 +76,12 @@ var HardAI = /** @class */ (function (_super) {
                 var x = casesVides_2[_a];
                 var board = Board.duplicate();
                 board.updateCase(x, this.playeruuid);
-                var evalu = this.minimax(board, depth - 1, true, alpha, beta, x);
+                var evalu = this.minimax(board, depth - 1, true, alpha, beta);
                 minEval = Math.min(evalu, minEval);
-                // beta = Math.min(beta, evalu.value)
-                // if (beta <= alpha) {
-                //     break;
-                // }
+                beta = Math.min(beta, evalu);
+                if (beta <= alpha) {
+                    break;
+                }
             }
             ;
             return minEval;

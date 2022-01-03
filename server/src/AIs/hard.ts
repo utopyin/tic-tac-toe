@@ -19,7 +19,7 @@ export default class HardAI extends AI{
         casesVides.forEach(x => {
             const board = Board.duplicate()
             board.updateCase(x,this.uuid)
-            let evaluation = this.minimax(board,9-turn-1,false,Number.NEGATIVE_INFINITY,Number.POSITIVE_INFINITY)
+            let evaluation = this.minimax(board,9-turn-1,false, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY)
             if (evaluation > bestScore.value) {
                 bestScore = {position : x, value: evaluation}
             }
@@ -36,11 +36,12 @@ export default class HardAI extends AI{
     //     return a.value<b.value ? a : b 
     // }
 
-    minimax(Board:Grid,depth:number,maximizingPlayer:boolean,alpha:number,beta:number,placement:Position|null=null):number{
+    minimax(Board:Grid,depth:number,maximizingPlayer:boolean,alpha:number,beta:number):number{
         
         const casesVides = Board.casesVides()
-        if (depth<=4 && placement) {
-            if (Board.isGameOver()) {
+        if (depth<=4) {
+            const isOver = Board.isGameOver()
+            if (isOver.isOver && !isOver.draw) {
                 return (+maximizingPlayer * -2) +1 
             } else if (depth==0) {
                 return 0
@@ -49,17 +50,15 @@ export default class HardAI extends AI{
 
         if (maximizingPlayer) {
             let maxEval = Number.NEGATIVE_INFINITY
-
             for (let x of casesVides ){
                 const board = Board.duplicate()
                 board.updateCase(x,this.uuid)
-
-                let evalu = this.minimax(board,depth-1, false,alpha,beta, x)
+                let evalu = this.minimax(board,depth-1, false,alpha,beta)
                 maxEval = Math.max(evalu,maxEval)
-                // alpha = Math.max(alpha, evalu.value)
-                // if (beta <= alpha) {
-                //     break;
-                // }
+                alpha = Math.max(alpha, evalu)
+                if (beta <= alpha) {
+                    break;
+                }
             };
             return maxEval
         } else {
@@ -67,14 +66,12 @@ export default class HardAI extends AI{
             for (let x of casesVides) {
                 const board = Board.duplicate()
                 board.updateCase(x,this.playeruuid)
-
-                let evalu = this.minimax(board,depth-1, true,alpha,beta, x)
-
+                let evalu = this.minimax(board,depth-1, true,alpha,beta)
                 minEval = Math.min(evalu,minEval)
-                // beta = Math.min(beta, evalu.value)
-                // if (beta <= alpha) {
-                //     break;
-                // }
+                beta = Math.min(beta, evalu)
+                if (beta <= alpha) {
+                    break;
+                }
             };
             return minEval
         }
