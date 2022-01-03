@@ -27,7 +27,7 @@ var GameHandler = /** @class */ (function () {
                 }
             }));
         }
-        var roomUuid = uuid_1.v4();
+        var roomUuid = (0, uuid_1.v4)();
         (_b = host.ws) === null || _b === void 0 ? void 0 : _b.send(JSON.stringify({
             op: 'host'
         }));

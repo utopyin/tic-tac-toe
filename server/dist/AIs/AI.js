@@ -21,7 +21,7 @@ var AI = /** @class */ (function (_super) {
     __extends(AI, _super);
     function AI(playerUUID) {
         var _this = this;
-        var uuid = uuid_1.v4();
+        var uuid = (0, uuid_1.v4)();
         _this = _super.call(this, { uuid: uuid, name: "AlphaTicTacToe", ws: null }) || this;
         _this.uuid = uuid;
         _this.name = "AlphaTicTacToe";

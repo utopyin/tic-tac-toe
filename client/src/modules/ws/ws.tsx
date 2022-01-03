@@ -142,7 +142,7 @@ export default ({children}: Props) => {
   }
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://tic-tac-toe-nsi.herokuapp.com/');
     const client = new Client(ws);
 
     ws.onopen = () => {

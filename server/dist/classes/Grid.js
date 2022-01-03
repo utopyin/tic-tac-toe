@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Case_1 = require("./Case");
+var Case_1 = require("./Case_");
 var Grid = /** @class */ (function () {
     function Grid(tableau) {
         if (tableau === void 0) { tableau = null; }

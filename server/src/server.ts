@@ -8,7 +8,9 @@ export interface ExtWebSocket extends WebSocket {
   uuid: string;
 }
 
-const wss = new WebSocketServer({ port: 8080 });
+const PORT = process.env.PORT as unknown as number || 8080
+const HOST = '0.0.0.0'
+const wss = new WebSocketServer({ port: PORT, host: HOST });
 
 wss.on('connection', (ws: ExtWebSocket) => {
   const uuid = uuidV4();

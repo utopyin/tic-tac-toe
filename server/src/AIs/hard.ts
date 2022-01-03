@@ -1,4 +1,4 @@
-import { Position } from '../classes/case';
+import { Position } from '../classes/Case_';
 import Grid from '../classes/Grid';
 import AI from './AI';
 
