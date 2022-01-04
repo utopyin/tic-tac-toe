@@ -11,6 +11,12 @@ export default class Client {
     this.name = name || '';
   }
 
+  ping() {
+    this.conn?.send(JSON.stringify({
+      op: 'ping'
+    }))
+  }
+
   setUuid(uuid: string) {
     this.uuid = uuid;
   }

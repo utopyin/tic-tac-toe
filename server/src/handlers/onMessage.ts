@@ -5,6 +5,11 @@ export function onMessage(socket: ExtWebSocket, payload: RawData) {
   try {
     const { op, data } = JSON.parse(payload.toString())
     switch(op) {
+      case 'ping':
+        socket.send(JSON.stringify({
+          op: 'pong'
+        }))
+        break;
       case 'rematch':
         gameHandler.getGameByPlayer(data.uuid)?.rematch(data.uuid);
         break;

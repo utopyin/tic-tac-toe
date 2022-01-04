@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import Client from './client'
 import { useNoti } from '../notifications/noti';
-import Case from '../ui/Case';
+import Waiting from './Waiting';
 
 interface Props {
   children: React.ReactElement<any, any>
@@ -85,6 +85,7 @@ export default ({children}: Props) => {
   const { addNoti } = useNoti();
   const [resets, setResets] = useState(0);
   const [isWinning, setIsWinning] = useState(false);
+  let pong = true;
 
   const reset = (isRematch: boolean = false) => {
     setCases(defaultCases);
@@ -141,8 +142,8 @@ export default ({children}: Props) => {
     
   }
 
-  useEffect(() => {
-    const ws = new WebSocket('wss://tic-tac-toe-nsi.herokuapp.com/');
+  const connect = () => {
+    const ws = new WebSocket('wss://tic-tac-toe-nsi.herokuapp.com/'); //'ws://localhost:8080'
     const client = new Client(ws);
 
     ws.onopen = () => {
@@ -150,11 +151,14 @@ export default ({children}: Props) => {
       setClient(client);
       client.hello();
       client.getRooms();
+      heartbeat();
     }
-
     ws.onmessage = (event) => {
       const { op, data } = JSON.parse(event.data);
       switch(op) {
+        case 'pong':
+          pong = true;
+          break;
         case 'rematch':
           reset(true);
           break;
@@ -206,7 +210,17 @@ export default ({children}: Props) => {
           break;
       }
     }
-  }, [])
+    ws.onclose = connect
+  }
+
+  function heartbeat() {
+    if (!client.conn || client.conn.readyState !== 1 || !pong) return;
+    pong = false;
+    client.ping();
+    setTimeout(heartbeat, 1000);
+  }
+
+  useEffect(connect, [])
 
   useEffect(() => {
     if (uuid) {
@@ -228,7 +242,7 @@ export default ({children}: Props) => {
   }
 
   return (
-    <WSContext.Provider value={value}>{isLoading ? null : children}</WSContext.Provider>
+    <WSContext.Provider value={value}>{isLoading ? <Waiting /> : children}</WSContext.Provider>
   )
 }
 
