@@ -1,10 +1,10 @@
-## Site en production
+## 🚀 Site en production
 
 [https://game.utopy.app](https://game.utopy.app)
 
 Le frontend React est hosté sur Netlify. Le backend nodejs websocket est hosté sur Heroku.
 
-## Etapes afin de lancer le client et le serveur
+## ⌨️ Etapes afin de lancer le client et le serveur
 
 ### Serveur
 
@@ -22,6 +22,6 @@ Créer un deuxième terminal. Après s'être rendu à nouveau dans le dossier ra
 - `npm install`
 - `npm run dev`
 
-### Accéder au site
+### Accéder au site local
 
 L'adresse locale devrait être [http://localhost:3000/](http://localhost:3000/)
