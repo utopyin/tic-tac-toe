@@ -1,4 +1,4 @@
-import Case, { Position, Symbol } from './Case';
+import Case, { Position } from './Case_';
 
 export default class Grid {
   tableau;

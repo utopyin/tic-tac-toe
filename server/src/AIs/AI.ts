@@ -1,4 +1,4 @@
-import Case, { Position } from "../classes/case";
+import Case, { Position } from "../classes/Case_";
 import Player from '../classes/Player';
 import { v4 } from 'uuid'
 export interface proposition {

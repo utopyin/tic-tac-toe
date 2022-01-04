@@ -7,6 +7,11 @@ function onMessage(socket, payload) {
     try {
         var _c = JSON.parse(payload.toString()), op = _c.op, data = _c.data;
         switch (op) {
+            case 'ping':
+                socket.send(JSON.stringify({
+                    op: 'pong'
+                }));
+                break;
             case 'rematch':
                 (_a = server_1.gameHandler.getGameByPlayer(data.uuid)) === null || _a === void 0 ? void 0 : _a.rematch(data.uuid);
                 break;

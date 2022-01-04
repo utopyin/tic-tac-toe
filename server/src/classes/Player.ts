@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import { Position } from './case';
+import { Position } from './Case_';
 
 export interface PlayerProps {
   uuid: string;

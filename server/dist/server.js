@@ -6,7 +6,9 @@ var GameHandler_1 = require("./classes/GameHandler");
 var handlers_1 = require("./handlers");
 var uuid_1 = require("uuid");
 exports.gameHandler = new GameHandler_1.default();
-var wss = new ws_1.WebSocketServer({ port: 8080 });
+var PORT = process.env.PORT || 8080;
+var HOST = '0.0.0.0';
+var wss = new ws_1.WebSocketServer({ port: PORT, host: HOST });
 wss.on('connection', function (ws) {
     var uuid = (0, uuid_1.v4)();
     ws.uuid = uuid;

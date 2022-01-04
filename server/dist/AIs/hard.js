@@ -24,36 +24,45 @@ var HardAI = /** @class */ (function (_super) {
         return _this;
     }
     HardAI.prototype.play = function (Board, turn) {
-        var evaluation = this.minimax(Board, 9 - turn, true, -2, 2);
-        console.log(evaluation);
-        return evaluation.position;
-    };
-    HardAI.prototype.customMax = function (a, b) {
-        return a.value > b.value ? a : b;
-    };
-    HardAI.prototype.customMin = function (a, b) {
-        return a.value < b.value ? a : b;
-    };
-    HardAI.prototype.minimax = function (Board, depth, maximizingPlayer, alpha, beta, placement) {
-        if (placement === void 0) { placement = null; }
+        var _this = this;
         var casesVides = Board.casesVides();
-        if (depth <= 4 && placement) {
-            if (Board.isGameOver()) {
-                return { 'position': placement, 'value': (+maximizingPlayer * -2) + 1 };
+        var bestScore = { position: null, value: Number.NEGATIVE_INFINITY };
+        casesVides.forEach(function (x) {
+            var board = Board.duplicate();
+            board.updateCase(x, _this.uuid);
+            var evaluation = _this.minimax(board, 9 - turn - 1, false, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+            if (evaluation > bestScore.value) {
+                bestScore = { position: x, value: evaluation };
+            }
+        });
+        return bestScore.position;
+    };
+    // customMax(a:minimax,b:minimax) {
+    //     return a.value>b.value ? a : b 
+    // }
+    // customMin(a:minimax,b:minimax) {
+    //     return a.value<b.value ? a : b 
+    // }
+    HardAI.prototype.minimax = function (Board, depth, maximizingPlayer, alpha, beta) {
+        var casesVides = Board.casesVides();
+        if (depth <= 4) {
+            var isOver = Board.isGameOver();
+            if (isOver.isOver && !isOver.draw) {
+                return (+maximizingPlayer * -2) + 1;
             }
             else if (depth == 0) {
-                return { 'position': placement, 'value': 0 };
+                return 0;
             }
         }
         if (maximizingPlayer) {
-            var maxEval = { 'position': 0, 'value': -2 };
+            var maxEval = Number.NEGATIVE_INFINITY;
             for (var _i = 0, casesVides_1 = casesVides; _i < casesVides_1.length; _i++) {
                 var x = casesVides_1[_i];
                 var board = Board.duplicate();
                 board.updateCase(x, this.uuid);
-                var evalu = this.minimax(board, depth - 1, false, alpha, beta, x);
-                maxEval = this.customMax(evalu, maxEval);
-                alpha = Math.max(alpha, evalu.value);
+                var evalu = this.minimax(board, depth - 1, false, alpha, beta);
+                maxEval = Math.max(evalu, maxEval);
+                alpha = Math.max(alpha, evalu);
                 if (beta <= alpha) {
                     break;
                 }
@@ -62,16 +71,15 @@ var HardAI = /** @class */ (function (_super) {
             return maxEval;
         }
         else {
-            var minEval = { 'position': 0, 'value': 10 };
+            var minEval = Number.POSITIVE_INFINITY;
             for (var _a = 0, casesVides_2 = casesVides; _a < casesVides_2.length; _a++) {
                 var x = casesVides_2[_a];
                 var board = Board.duplicate();
                 board.updateCase(x, this.playeruuid);
-                var evalu = this.minimax(board, depth - 1, true, alpha, beta, x);
-                minEval = this.customMin(evalu, minEval);
-                beta = Math.min(beta, evalu.value);
+                var evalu = this.minimax(board, depth - 1, true, alpha, beta);
+                minEval = Math.min(evalu, minEval);
+                beta = Math.min(beta, evalu);
                 if (beta <= alpha) {
-                    console.log("pruning");
                     break;
                 }
             }
