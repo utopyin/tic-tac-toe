@@ -7,6 +7,9 @@
     "start": "node dist/server.js",
     "dev": "concurrently \"tsc -W\" \"nodemon dist/server.js\""
   },
+  "engines": {
+    "node": "14.17.x"
+  },
   "author": "utopy, raphoo",
   "license": "ISC",
   "devDependencies": {

@@ -11,7 +11,7 @@ export function onMessage(socket: ExtWebSocket, payload: RawData) {
       case 'host':
         gameHandler.create({
           uuid: data.uuid,
-          name: data.name,
+          name: data.name || 'Player',
           ws: socket,
         }, data.options)
         break;
@@ -22,7 +22,7 @@ export function onMessage(socket: ExtWebSocket, payload: RawData) {
         gameHandler.join(data.room, {
           uuid: data.uuid,
           ws: socket,
-          name: data.name
+          name: data.name || 'Player'
         })
         break;
       case 'hello':
