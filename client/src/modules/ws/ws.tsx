@@ -143,7 +143,7 @@ export default ({children}: Props) => {
   }
 
   const connect = () => {
-    const ws = new WebSocket('wss://tic-tac-toe-nsi.herokuapp.com/'); //wss://tic-tac-toe-nsi.herokuapp.com/
+    const ws = new WebSocket(import.meta.env.PROD ? 'wss://tic-tac-toe-nsi.herokuapp.com/' : 'ws://localhost:8080');
     const client = new Client(ws);
 
     ws.onopen = () => {
