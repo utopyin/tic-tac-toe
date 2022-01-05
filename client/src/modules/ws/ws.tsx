@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import Client from './client'
 import { useNoti } from '../notifications/noti';
 import Waiting from './Waiting';
+import useAudio from '../audio/useAudio';
 
 interface Props {
   children: React.ReactElement<any, any>
@@ -86,6 +87,7 @@ export default ({children}: Props) => {
   const { addNoti } = useNoti();
   const [rematchs, setRematchs] = useState(0);
   const [isWinning, setIsWinning] = useState(false);
+  const toogle = useAudio();
   let pong = true;
 
   const reset = (isRematch: boolean = false) => {
@@ -203,6 +205,7 @@ export default ({children}: Props) => {
           })
           break;    
         case 'update':
+          toogle();
           setCases(old => old.map(c => c.position == data.position ? data : c))
           setGameState(old => {return {...old, ...{turn: old.turn + 1}}})
           break;
