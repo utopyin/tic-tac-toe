@@ -7,6 +7,16 @@
   justify-content: center;
   position: relative;
 
+  .StartingMessage {
+    z-index: 3;
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--grey);
+    animation: big-text 2s ease-out forwards;
+    position: absolute;
+    user-select: none;
+  }
+
   &.GameOver {
 
     .Inner {
@@ -34,7 +44,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: var(--light-grey);
-    animation: slide-up ease-out 0.5s; 
+    animation: slide-up ease-out 0.5s;
 
     h2 {
       font-size: 1.2rem;
@@ -70,5 +80,21 @@
   100% {
     opacity: 1;
     transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes big-text {
+  0% {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+
+  100% {
+    opacity: 0;
   }
 }

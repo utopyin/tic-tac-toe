@@ -20,6 +20,7 @@ interface IGameState {
 }
 
 export interface ICase {
+  isDisabled: boolean;
   position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   state: 'challenger' | 'host' | '';
 }
@@ -37,7 +38,7 @@ interface IState {
   cases: ICase[];
   reset: () => void;
   updateNickname: () => void;
-  resets: number;
+  rematchs: number;
   isWinning: boolean;
 }
 
@@ -50,15 +51,15 @@ const defaultGameState: IGameState = {
   isDraw: false
 }
 const defaultCases: ICase[] = [
-  { position: 0, state: '' },
-  { position: 1, state: '' },
-  { position: 2, state: '' },
-  { position: 3, state: '' },
-  { position: 4, state: '' },
-  { position: 5, state: '' },
-  { position: 6, state: '' },
-  { position: 7, state: '' },
-  { position: 8, state: '' },
+  { position: 0, state: '', isDisabled: false },
+  { position: 1, state: '', isDisabled: false },
+  { position: 2, state: '', isDisabled: false },
+  { position: 3, state: '', isDisabled: false },
+  { position: 4, state: '', isDisabled: false },
+  { position: 5, state: '', isDisabled: false },
+  { position: 6, state: '', isDisabled: false },
+  { position: 7, state: '', isDisabled: false },
+  { position: 8, state: '', isDisabled: false },
 ]
 
 const WSContext = createContext<IState>({
@@ -70,7 +71,7 @@ const WSContext = createContext<IState>({
   cases: defaultCases,
   reset: () => {},
   updateNickname: () => {},
-  resets: 0,
+  rematchs: 0,
   isWinning: false
 })
 
@@ -83,7 +84,7 @@ export default ({children}: Props) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [cases, setCases] = useState<ICase[]>(defaultCases);
   const { addNoti } = useNoti();
-  const [resets, setResets] = useState(0);
+  const [rematchs, setRematchs] = useState(0);
   const [isWinning, setIsWinning] = useState(false);
   let pong = true;
 
@@ -101,12 +102,10 @@ export default ({children}: Props) => {
         }
       });
       setCases(defaultCases);
-      setResets(oldResets => oldResets + 1);
       return 
     }
     setGameState(defaultGameState);
     setRole('');
-    setResets(0);
   }
 
   function end(forfeit: boolean = false) {
@@ -160,10 +159,16 @@ export default ({children}: Props) => {
           pong = true;
           break;
         case 'rematch':
+          setRematchs(oldRematch => oldRematch + 1);
           reset(true);
           break;
         case 'leave':
-          if (data.who == 'you') return reset();
+          if (data.who == 'you') {
+            console.log('you')
+            setRematchs(0);
+            return reset();
+          }
+          setRematchs(oldRematch => oldRematch + 1);
           setGameState(old => {return {...old, opponent: undefined}})
           break;
         case 'hello':
@@ -173,6 +178,7 @@ export default ({children}: Props) => {
           setRooms(data.rooms)
           break;
         case 'host':
+          setRematchs(0);
           setRole('host');
           setGameState(defaultGameState);
           break;
@@ -238,7 +244,7 @@ export default ({children}: Props) => {
     cases,
     reset,
     updateNickname,
-    resets,
+    rematchs,
     isWinning
   }
 

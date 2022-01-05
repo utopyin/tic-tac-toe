@@ -9,12 +9,12 @@ interface Props {
 }
 
 export default ({props}: Props) => {
-  const { client, gameState } = useWS();
+  const { client } = useWS();
 
-  const click = () => client.play(props.position)
+  const click = () => !props.isDisabled && client.play(props.position)
 
   return (
-    <div className={`${style.Case} ${props.state == '' ? '' : style.blocked} ${gameState.isOver ? style.Disabled : ''}`} onClick={click}>
+    <div className={`${style.Case} ${props.state == '' ? '' : style.blocked} ${props.isDisabled ? style.Disabled : ''}`} onClick={click}>
       {
         props.state == 'challenger' ? <ChallengerSVG /> :
         props.state == 'host' ? <HostSVG /> :
