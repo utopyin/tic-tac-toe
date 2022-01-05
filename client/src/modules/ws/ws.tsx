@@ -143,7 +143,7 @@ export default ({children}: Props) => {
   }
 
   const connect = () => {
-    const ws = new WebSocket('wss://tic-tac-toe-nsi.herokuapp.com/'); //'ws://localhost:8080'
+    const ws = new WebSocket('ws://localhost:8080'); //wss://tic-tac-toe-nsi.herokuapp.com/
     const client = new Client(ws);
 
     ws.onopen = () => {
@@ -214,6 +214,7 @@ export default ({children}: Props) => {
   }
 
   function heartbeat() {
+    console.log(client);
     if (!client.conn || client.conn.readyState !== 1 || !pong) return;
     pong = false;
     client.ping();

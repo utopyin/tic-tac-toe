@@ -114,25 +114,23 @@ export default class Game {
       this.host.leave(uuid);
       return true;
     }
-    if (uuid == this.host.uuid) { // if player == host
+    if (uuid == this.host.uuid) {
       this.host.leave(uuid);
-      this.challenger.leave(uuid);
       if (!this.isOver) {
-        this.challenger.win(this.turn, true) // challenger wins by forfeit
-        this.isOver = true // game's over
+        this.challenger.win(this.turn, true)
+        this.isOver = true
       }
-      this.host = this.challenger // host becomes challenger
+      this.host = this.challenger
       this.challenger = null
     } else if (uuid == this.challenger.uuid) {
-      this.host.leave(uuid);
       this.challenger.leave(uuid);
       if (!this.isOver) {
-        this.host.win(this.turn, true)  // host wins by forfeit
-        this.isOver = true // game's over
+        this.host.win(this.turn, true)
+        this.isOver = true
       }
-      this.challenger = null // challenger left
+      this.challenger = null
     }
-    return false // the game isn't destroyed
+    return false
   }
 
   reset(isRematch?: boolean) {
