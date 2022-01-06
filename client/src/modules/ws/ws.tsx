@@ -136,12 +136,12 @@ export default ({children}: Props) => {
     localStorage.setItem('@name', value);
     setClient(old => {
       old.name = value
-      return old
+      return Object.assign(Object.create(Object.getPrototypeOf(old)), old);
     })
     input.value = "";
     addNoti({
       title: 'Nickname updated',
-      message: `Your nickname is now ${value || 'Player'}`
+      message: `Your nickname is now ${value || 'Player'} ${value == 'comrad' ? '(listening comrad ^^)' : ''}`
     })
     
   }

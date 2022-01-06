@@ -1,6 +1,8 @@
 import { useState, createContext, useContext, ReactElement, useEffect } from 'react';
 import Cross from './svg/cross'
 import Circle from './svg/circle'
+import Comrad from './svg/comrad'
+import { useWS } from '../ws/ws'
 
 interface Props {
   children: ReactElement<any, any>
@@ -20,12 +22,7 @@ const hostSkins = {
   circle: {
     svg: <Circle />,
     name: 'circle'
-  },
-  spy: {
-    svg: <Cross />,
-    name: 'cross'
   }
-
 }
 
 const challengerSkins = {
@@ -33,15 +30,15 @@ const challengerSkins = {
     svg: <Cross />,
     name: 'cross'
   },
-  spy: {
-    svg: <Circle />,
-    name: 'circle'
+  comrad: {
+    svg: <Comrad />,
+    name: 'comrad'
   }
 }
 
 const defaultSkins: ISkins = {
   HostSkin: hostSkins['circle'],
-  ChallengerSkin: challengerSkins['cross']
+  ChallengerSkin: challengerSkins[localStorage.getItem('@name') == 'comrad' ? 'comrad' : 'cross']
 }
 
 const SkinContext = createContext({
@@ -52,8 +49,14 @@ const SkinContext = createContext({
 
 
 export default ({children}: Props) => {
+  const { client } = useWS();
   const [HostSkin, setHostSkin] = useState(defaultSkins['HostSkin']);
-  const [ChallengerSkin, setChallengerSkin] = useState(defaultSkins['ChallengerSkin'])
+  const [ChallengerSkin, setChallengerSkin] = useState(client.name == 'comrad' ?challengerSkins['comrad'] : defaultSkins['ChallengerSkin'])
+
+  useEffect(() => {
+    console.log(client)
+    if (client.name == 'comrad') setChallengerSkin(challengerSkins['comrad']);
+  }, [client])
 
   const chooseHostSkin = (skinName: keyof typeof hostSkins) => {
     if (Object.keys(hostSkins).includes(skinName))
