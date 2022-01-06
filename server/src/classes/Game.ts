@@ -45,7 +45,8 @@ export default class Game {
           }
         }
       }))
-
+      
+      this.start();
       resolve()
     })
   }
@@ -144,6 +145,7 @@ export default class Game {
     if (isRematch) {
       this.host.rematch();
       this.challenger?.rematch();
+      this.start();
     }
   }
 
@@ -162,6 +164,10 @@ export default class Game {
     this.isRematch = true;
   }
   
+  start() {
+    this.whoPlays()?.start(true);
+    this.whoWaits()?.start(false);
+  }
 }
 
 export class GameIA extends Game {
@@ -175,6 +181,12 @@ export class GameIA extends Game {
         opponent: {
           name: IA.name
         }
+      }
+    }))
+    this.host.ws?.send(JSON.stringify({
+      op: 'start',
+      data: {
+        isStarting: true
       }
     }))
   }

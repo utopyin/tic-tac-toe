@@ -60,6 +60,7 @@ var Game = /** @class */ (function () {
                     }
                 }
             }));
+            _this.start();
             resolve();
         });
     };
@@ -159,6 +160,7 @@ var Game = /** @class */ (function () {
         if (isRematch) {
             this.host.rematch();
             (_a = this.challenger) === null || _a === void 0 ? void 0 : _a.rematch();
+            this.start();
         }
     };
     Game.prototype.rematch = function (uuid) {
@@ -175,13 +177,18 @@ var Game = /** @class */ (function () {
         this.rematcher = uuid;
         this.isRematch = true;
     };
+    Game.prototype.start = function () {
+        var _a, _b;
+        (_a = this.whoPlays()) === null || _a === void 0 ? void 0 : _a.start(true);
+        (_b = this.whoWaits()) === null || _b === void 0 ? void 0 : _b.start(false);
+    };
     return Game;
 }());
 exports.default = Game;
 var GameIA = /** @class */ (function (_super) {
     __extends(GameIA, _super);
     function GameIA(host, IA) {
-        var _a;
+        var _a, _b;
         var _this = _super.call(this, host) || this;
         _this.challenger = IA;
         (_a = _this.host.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
@@ -190,6 +197,12 @@ var GameIA = /** @class */ (function (_super) {
                 opponent: {
                     name: IA.name
                 }
+            }
+        }));
+        (_b = _this.host.ws) === null || _b === void 0 ? void 0 : _b.send(JSON.stringify({
+            op: 'start',
+            data: {
+                isStarting: true
             }
         }));
         return _this;

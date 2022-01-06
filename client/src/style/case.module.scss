@@ -44,14 +44,6 @@
   svg {
     z-index: 2;
     width: 35%;
-
-    &.challenger {
-      fill: var(--red);
-    }
-
-    &.host {
-      fill: var(--green);
-    }
   }
 
   &::after {

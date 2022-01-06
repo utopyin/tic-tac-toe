@@ -4,9 +4,8 @@ import Case from './Case'
 import { useEffect, useState } from 'react';
 
 export default () => {
-  const { gameState, cases, client, isWinning, role, rematchs: resets } = useWS();
+  const { gameState, cases, client, isWinning, isStarting } = useWS();
   const [isRematching, setIsRematching] = useState(false);
-  const [isStarting, setIsStarting] = useState(role == 'host' ? true : false);
   const isDisabled = gameState.isOver || !gameState.opponent
 
   useEffect(() => {
@@ -14,11 +13,6 @@ export default () => {
       setIsRematching(false)
     }
   }, [gameState])
-
-  useEffect(() => {
-    if (role == 'host') setIsStarting((resets + gameState.turn) % 2 == 0);
-    else if (role == 'challenger') setIsStarting((resets + gameState.turn) % 2 != 0);
-  }, [gameState, resets, role])
 
   const [points, setPoints] = useState('.');
 
@@ -38,9 +32,9 @@ export default () => {
 
   return (
     <div className={`${style.Board} ${gameState.isOver || !gameState.opponent ? style.GameOver : ''}`}>
-      {/* { gameState.turn == 0 && gameState.opponent && <div className={style.StartingMessage}>
+      { gameState.turn == 0 && gameState.opponent && <div className={style.StartingMessage}>
         { isStarting ? "You are starting" : "Your opponent is starting"} 
-      </div> } */}
+      </div> }
       { gameState.isOver && <div className={style.Overlay}>
         <h2>{gameState.isDraw ? 'Draw' : isWinning ? 'Win' : 'Lose'}</h2>
         <span>{gameState.isDraw ? 'When two gods defy the impossible...' : isWinning ? 'Well done! You beat his ass' : 'Well, maybe next time loser...'}</span>

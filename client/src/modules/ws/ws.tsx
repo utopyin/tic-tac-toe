@@ -41,6 +41,7 @@ interface IState {
   updateNickname: () => void;
   rematchs: number;
   isWinning: boolean;
+  isStarting: boolean;
 }
 
 const defaultClient = new Client();
@@ -73,7 +74,8 @@ const WSContext = createContext<IState>({
   reset: () => {},
   updateNickname: () => {},
   rematchs: 0,
-  isWinning: false
+  isWinning: false,
+  isStarting: false
 })
 
 export default ({children}: Props) => {
@@ -87,6 +89,7 @@ export default ({children}: Props) => {
   const { addNoti } = useNoti();
   const [rematchs, setRematchs] = useState(0);
   const [isWinning, setIsWinning] = useState(false);
+  const [isStarting, setIsStarting] = useState(role == 'host');
   const toogle = useAudio();
   let pong = true;
 
@@ -217,6 +220,9 @@ export default ({children}: Props) => {
             }
           })
           break;
+        case 'start':
+          setIsStarting(data.isStarting)
+          break;
       }
     }
     ws.onclose = connect
@@ -248,7 +254,8 @@ export default ({children}: Props) => {
     reset,
     updateNickname,
     rematchs,
-    isWinning
+    isWinning,
+    isStarting
   }
 
   return (
