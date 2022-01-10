@@ -8,6 +8,15 @@ var Player = /** @class */ (function () {
         this.name = name || 'Player';
         // const symbols: Symbol[] = ["O", "\u262b"];
     }
+    Player.prototype.start = function (isStarting) {
+        var _a;
+        (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
+            op: 'start',
+            data: {
+                isStarting: isStarting
+            }
+        }));
+    };
     Player.prototype.draw = function () {
         var _a;
         (_a = this.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({

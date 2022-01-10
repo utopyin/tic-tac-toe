@@ -20,6 +20,15 @@ export default class Player {
     // const symbols: Symbol[] = ["O", "\u262b"];
   }
 
+  start(isStarting: boolean) {
+    this.ws?.send(JSON.stringify({
+      op: 'start',
+      data: {
+        isStarting
+      }
+    }))
+  }
+
   draw() {
     this.ws?.send(JSON.stringify({
       op: 'draw'

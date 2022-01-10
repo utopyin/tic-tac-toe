@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import Client from './client'
 import { useNoti } from '../notifications/noti';
 import Waiting from './Waiting';
+import useAudio from '../audio/useAudio';
 
 interface Props {
   children: React.ReactElement<any, any>
@@ -20,6 +21,7 @@ interface IGameState {
 }
 
 export interface ICase {
+  isDisabled: boolean;
   position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   state: 'challenger' | 'host' | '';
 }
@@ -37,8 +39,9 @@ interface IState {
   cases: ICase[];
   reset: () => void;
   updateNickname: () => void;
-  resets: number;
+  rematchs: number;
   isWinning: boolean;
+  isStarting: boolean;
 }
 
 const defaultClient = new Client();
@@ -50,15 +53,15 @@ const defaultGameState: IGameState = {
   isDraw: false
 }
 const defaultCases: ICase[] = [
-  { position: 0, state: '' },
-  { position: 1, state: '' },
-  { position: 2, state: '' },
-  { position: 3, state: '' },
-  { position: 4, state: '' },
-  { position: 5, state: '' },
-  { position: 6, state: '' },
-  { position: 7, state: '' },
-  { position: 8, state: '' },
+  { position: 0, state: '', isDisabled: false },
+  { position: 1, state: '', isDisabled: false },
+  { position: 2, state: '', isDisabled: false },
+  { position: 3, state: '', isDisabled: false },
+  { position: 4, state: '', isDisabled: false },
+  { position: 5, state: '', isDisabled: false },
+  { position: 6, state: '', isDisabled: false },
+  { position: 7, state: '', isDisabled: false },
+  { position: 8, state: '', isDisabled: false },
 ]
 
 const WSContext = createContext<IState>({
@@ -70,8 +73,9 @@ const WSContext = createContext<IState>({
   cases: defaultCases,
   reset: () => {},
   updateNickname: () => {},
-  resets: 0,
-  isWinning: false
+  rematchs: 0,
+  isWinning: false,
+  isStarting: false
 })
 
 export default ({children}: Props) => {
@@ -83,8 +87,10 @@ export default ({children}: Props) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [cases, setCases] = useState<ICase[]>(defaultCases);
   const { addNoti } = useNoti();
-  const [resets, setResets] = useState(0);
+  const [rematchs, setRematchs] = useState(0);
   const [isWinning, setIsWinning] = useState(false);
+  const [isStarting, setIsStarting] = useState(role == 'host');
+  const toogle = useAudio();
   let pong = true;
 
   const reset = (isRematch: boolean = false) => {
@@ -101,12 +107,10 @@ export default ({children}: Props) => {
         }
       });
       setCases(defaultCases);
-      setResets(oldResets => oldResets + 1);
       return 
     }
     setGameState(defaultGameState);
     setRole('');
-    setResets(0);
   }
 
   function end(forfeit: boolean = false) {
@@ -132,18 +136,18 @@ export default ({children}: Props) => {
     localStorage.setItem('@name', value);
     setClient(old => {
       old.name = value
-      return old
+      return Object.assign(Object.create(Object.getPrototypeOf(old)), old);
     })
     input.value = "";
     addNoti({
       title: 'Nickname updated',
-      message: `Your nickname is now ${value || 'Player'}`
+      message: `Your nickname is now ${value || 'Player'} ${value == 'comrad' ? '(listening comrad ^^)' : ''}`
     })
     
   }
 
   const connect = () => {
-    const ws = new WebSocket('wss://tic-tac-toe-nsi.herokuapp.com/'); //'ws://localhost:8080'
+    const ws = new WebSocket(import.meta.env.PROD ? 'wss://tic-tac-toe-nsi.herokuapp.com/' : 'ws://localhost:8080');
     const client = new Client(ws);
 
     ws.onopen = () => {
@@ -160,10 +164,16 @@ export default ({children}: Props) => {
           pong = true;
           break;
         case 'rematch':
+          setRematchs(oldRematch => oldRematch + 1);
           reset(true);
           break;
         case 'leave':
-          if (data.who == 'you') return reset();
+          if (data.who == 'you') {
+            console.log('you')
+            setRematchs(0);
+            return reset();
+          }
+          setRematchs(oldRematch => oldRematch + 1);
           setGameState(old => {return {...old, opponent: undefined}})
           break;
         case 'hello':
@@ -173,6 +183,7 @@ export default ({children}: Props) => {
           setRooms(data.rooms)
           break;
         case 'host':
+          setRematchs(0);
           setRole('host');
           setGameState(defaultGameState);
           break;
@@ -197,6 +208,7 @@ export default ({children}: Props) => {
           })
           break;    
         case 'update':
+          toogle();
           setCases(old => old.map(c => c.position == data.position ? data : c))
           setGameState(old => {return {...old, ...{turn: old.turn + 1}}})
           break;
@@ -208,12 +220,16 @@ export default ({children}: Props) => {
             }
           })
           break;
+        case 'start':
+          setIsStarting(data.isStarting)
+          break;
       }
     }
     ws.onclose = connect
   }
 
   function heartbeat() {
+    console.log(client);
     if (!client.conn || client.conn.readyState !== 1 || !pong) return;
     pong = false;
     client.ping();
@@ -237,8 +253,9 @@ export default ({children}: Props) => {
     cases,
     reset,
     updateNickname,
-    resets,
-    isWinning
+    rematchs,
+    isWinning,
+    isStarting
   }
 
   return (

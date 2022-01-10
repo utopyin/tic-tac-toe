@@ -60,6 +60,7 @@ var Game = /** @class */ (function () {
                     }
                 }
             }));
+            _this.start();
             resolve();
         });
     };
@@ -128,26 +129,24 @@ var Game = /** @class */ (function () {
             this.host.leave(uuid);
             return true;
         }
-        if (uuid == this.host.uuid) { // if player == host
+        if (uuid == this.host.uuid) {
             this.host.leave(uuid);
-            this.challenger.leave(uuid);
             if (!this.isOver) {
-                this.challenger.win(this.turn, true); // challenger wins by forfeit
-                this.isOver = true; // game's over
+                this.challenger.win(this.turn, true);
+                this.isOver = true;
             }
-            this.host = this.challenger; // host becomes challenger
+            this.host = this.challenger;
             this.challenger = null;
         }
         else if (uuid == this.challenger.uuid) {
-            this.host.leave(uuid);
             this.challenger.leave(uuid);
             if (!this.isOver) {
-                this.host.win(this.turn, true); // host wins by forfeit
-                this.isOver = true; // game's over
+                this.host.win(this.turn, true);
+                this.isOver = true;
             }
-            this.challenger = null; // challenger left
+            this.challenger = null;
         }
-        return false; // the game isn't destroyed
+        return false;
     };
     Game.prototype.reset = function (isRematch) {
         var _a;
@@ -161,6 +160,7 @@ var Game = /** @class */ (function () {
         if (isRematch) {
             this.host.rematch();
             (_a = this.challenger) === null || _a === void 0 ? void 0 : _a.rematch();
+            this.start();
         }
     };
     Game.prototype.rematch = function (uuid) {
@@ -177,13 +177,18 @@ var Game = /** @class */ (function () {
         this.rematcher = uuid;
         this.isRematch = true;
     };
+    Game.prototype.start = function () {
+        var _a, _b;
+        (_a = this.whoPlays()) === null || _a === void 0 ? void 0 : _a.start(true);
+        (_b = this.whoWaits()) === null || _b === void 0 ? void 0 : _b.start(false);
+    };
     return Game;
 }());
 exports.default = Game;
 var GameIA = /** @class */ (function (_super) {
     __extends(GameIA, _super);
     function GameIA(host, IA) {
-        var _a;
+        var _a, _b;
         var _this = _super.call(this, host) || this;
         _this.challenger = IA;
         (_a = _this.host.ws) === null || _a === void 0 ? void 0 : _a.send(JSON.stringify({
@@ -192,6 +197,12 @@ var GameIA = /** @class */ (function (_super) {
                 opponent: {
                     name: IA.name
                 }
+            }
+        }));
+        (_b = _this.host.ws) === null || _b === void 0 ? void 0 : _b.send(JSON.stringify({
+            op: 'start',
+            data: {
+                isStarting: true
             }
         }));
         return _this;
