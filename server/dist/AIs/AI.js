@@ -31,7 +31,7 @@ var AI = /** @class */ (function (_super) {
     AI.prototype.getRandomCase = function (Board) {
         var caseu = Math.floor(Math.random() * 9);
         while (Board[caseu].value) {
-            caseu = Math.floor(Math.random() * 8);
+            caseu = Math.floor(Math.random() * 9);
         }
         return caseu;
     };
